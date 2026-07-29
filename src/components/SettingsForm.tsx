@@ -59,7 +59,7 @@ export function SettingsForm({ value, apiKey, onApiKey, onChange }: Props) {
       </section>
       <section>
         <h2>关于</h2>
-        <p>圆头耄耋桌宠 0.1.3</p>
+        <p>圆头耄耋桌宠 0.1.4</p>
         <p className="muted">程序代码采用 MIT 许可证。角色参考素材版权归原始权利人，仅供获得授权的个人使用。</p>
       </section>
     </div>

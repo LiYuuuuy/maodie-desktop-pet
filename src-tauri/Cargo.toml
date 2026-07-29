@@ -1,6 +1,6 @@
 [package]
 name = "maodie-desktop-pet"
-version = "0.1.3"
+version = "0.1.4"
 description = "圆头耄耋跨平台桌宠"
 authors = ["Maodie contributors"]
 edition = "2021"

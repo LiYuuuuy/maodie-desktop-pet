@@ -71,11 +71,13 @@ Credential Manager 或 macOS Keychain。聊天历史最多保留 50 条，可关
 
 ```text
 src/assets/pet/<sitting|walking|sleeping|happy|petting|hissing>/00.png ... 15.png
+src/assets/pet-transitions/<sitting-walking|sitting-sleeping|walking-sleeping>/00.png ... 07.png
 ```
 
 替换时保持 RGBA PNG、512×512、统一承重点和文件名即可，无需改代码。`walking` 只需朝右，
-向左由程序镜像。当前统一身份锚点、关键帧源表、过渡帧和质量报告位于
-`artifacts/asset-work/v2/`。素材处理脚本会保持原比例、统一承重点与毛色，并把关键帧和
+向左由程序镜像。三组静息切换动画只保存一个方向，反向切换由播放器倒放。统一身份锚点
+位于 `artifacts/asset-work/v2/`，当前动作源表、静息切换源表、预览和质量报告位于
+`artifacts/asset-work/v3/`。素材处理脚本会保持原比例、统一承重点与毛色，并把关键帧和
 真正的 50% 过渡帧交错输出：
 
 ```bash
@@ -100,7 +102,8 @@ PYTHONPATH=/path/to/opencv-python-headless \
   Rust 源码已通过 `cargo fmt --check`；Linux 验证容器缺少 C linker 与 GTK/WebKit 系统库，
   因而后端完整编译留给配置齐全的 Windows/macOS CI。
 - 文件投喂只支持普通本地文件，不支持文件夹、网络共享、云占位文件和符号链接。
-- 动画由 8 个动作关键帧与 8 个相邻过渡帧组成；walking/petting 默认 10 FPS，避免快速抽动。
+- 状态动画由 8 个动作关键帧与 8 个相邻过渡帧组成；三组静息状态之间另有 8 帧切换动画。
+- walking 默认 10 FPS；petting/hissing 使用逐帧时长实现快速前伸、峰值停顿和较慢恢复。
 - 应用未附带签名证书、自动更新服务或发布凭据。
 
 状态图见 [架构说明](docs/architecture.md)，实机测试请使用
