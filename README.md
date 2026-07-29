@@ -5,7 +5,7 @@
 
 ## 已实现
 
-- 六套真实包浆风格动画，每套严格 8 张 512×512 透明 PNG；
+- 六套真实包浆风格动画，每套严格 16 张 512×512 透明 PNG；
 - 可测试的集中状态机、随机行为、左右游走与边界反向；
 - 6 logical px / 500 ms 点击拖动判定，抚摸与可调哈气概率；
 - 原生文件拖放、路径去重与 Rust 安全校验，仅调用系统回收站/废纸篓；
@@ -74,12 +74,13 @@ src/assets/pet/<sitting|walking|sleeping|happy|petting|hissing>/00.png ... 15.pn
 ```
 
 替换时保持 RGBA PNG、512×512、统一承重点和文件名即可，无需改代码。`walking` 只需朝右，
-向左由程序镜像。当前生成源表位于 `artifacts/asset-work/source-sheets/`；标准库切分脚本：
+向左由程序镜像。当前统一身份锚点、关键帧源表、过渡帧和质量报告位于
+`artifacts/asset-work/v2/`。素材处理脚本会保持原比例、统一承重点与毛色，并把关键帧和
+真正的 50% 过渡帧交错输出：
 
 ```bash
-python3 scripts/split_sprite_sheet.py \
-  artifacts/asset-work/source-sheets/sitting.png \
-  src/assets/pet/sitting
+PYTHONPATH=/path/to/opencv-python-headless \
+  python3 scripts/process_animation_assets.py
 ```
 
 参考盘点与生成记录见 [关键帧盘点](docs/keyframe-inventory.md) 和
@@ -95,11 +96,11 @@ python3 scripts/split_sprite_sheet.py \
 
 ## 已知限制
 
-- 已在当前环境通过 TypeScript 类型检查、ESLint、11 个 Vitest 测试和 Vite 生产构建。
+- 已在当前环境通过 TypeScript 类型检查、ESLint、Vitest 和 Vite 生产构建。
   Rust 源码已通过 `cargo fmt --check`；Linux 验证容器缺少 C linker 与 GTK/WebKit 系统库，
   因而后端完整编译留给配置齐全的 Windows/macOS CI。
 - 文件投喂只支持普通本地文件，不支持文件夹、网络共享、云占位文件和符号链接。
-- 动画是 16 帧生成序列，快速步态仍需在两端实机复核；毛发边缘保留轻微旧抠图 halo。
+- 动画由 8 个动作关键帧与 8 个相邻过渡帧组成；walking/petting 默认 10 FPS，避免快速抽动。
 - 应用未附带签名证书、自动更新服务或发布凭据。
 
 状态图见 [架构说明](docs/architecture.md)，实机测试请使用

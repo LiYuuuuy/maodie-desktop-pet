@@ -32,10 +32,10 @@ export const ANIMATION_CONFIG: Record<
   VisualState,
   { fps: number; loop: boolean; durationMs?: number }
 > = {
-  sitting: { fps: 16, loop: true },
-  walking: { fps: 24, loop: true },
-  sleeping: { fps: 12, loop: true },
-  happy: { fps: 24, loop: true, durationMs: 2_000 },
-  petting: { fps: 24, loop: false },
-  hissing: { fps: 24, loop: false },
+  sitting: { fps: 8, loop: true },
+  walking: { fps: 10, loop: true },
+  sleeping: { fps: 6, loop: true },
+  happy: { fps: 12, loop: true, durationMs: 2_000 },
+  petting: { fps: 10, loop: false },
+  hissing: { fps: 10, loop: false },
 };
