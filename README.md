@@ -70,7 +70,7 @@ Credential Manager 或 macOS Keychain。聊天历史最多保留 50 条，可关
 业务代码只依赖固定接口：
 
 ```text
-src/assets/pet/<sitting|walking|sleeping|happy|petting|hissing>/00.png ... 07.png
+src/assets/pet/<sitting|walking|sleeping|happy|petting|hissing>/00.png ... 15.png
 ```
 
 替换时保持 RGBA PNG、512×512、统一承重点和文件名即可，无需改代码。`walking` 只需朝右，
@@ -99,7 +99,7 @@ python3 scripts/split_sprite_sheet.py \
   Rust 源码已通过 `cargo fmt --check`；Linux 验证容器缺少 C linker 与 GTK/WebKit 系统库，
   因而后端完整编译留给配置齐全的 Windows/macOS CI。
 - 文件投喂只支持普通本地文件，不支持文件夹、网络共享、云占位文件和符号链接。
-- 动画是 8 帧生成序列，快速步态仍需在两端实机复核；毛发边缘保留轻微旧抠图 halo。
+- 动画是 16 帧生成序列，快速步态仍需在两端实机复核；毛发边缘保留轻微旧抠图 halo。
 - 应用未附带签名证书、自动更新服务或发布凭据。
 
 状态图见 [架构说明](docs/architecture.md)，实机测试请使用

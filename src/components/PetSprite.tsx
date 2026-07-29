@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ANIMATION_CONFIG, type VisualState } from "../pet/types";
 
 const frameModules = import.meta.glob<string>("../assets/pet/*/*.png", {
@@ -24,28 +24,36 @@ type Props = {
 export function PetSprite({ state, direction, fpsMultiplier = 1, onComplete }: Props) {
   const frames = useMemo(() => framesFor(state), [state]);
   const [frame, setFrame] = useState(0);
+  const onCompleteRef = useRef(onComplete);
+
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
 
   useEffect(() => {
     setFrame(0);
     const config = ANIMATION_CONFIG[state];
-    const startedAt = performance.now();
+    const frameDuration = 1_000 / Math.max(1, config.fps * fpsMultiplier);
     const interval = window.setInterval(() => {
       setFrame((current) => {
-        if (config.durationMs && performance.now() - startedAt >= config.durationMs) {
-          window.clearInterval(interval);
-          queueMicrotask(() => onComplete(state));
-          return current;
-        }
         const next = current + 1;
         if (next < frames.length) return next;
         if (config.loop) return 0;
         window.clearInterval(interval);
-        queueMicrotask(() => onComplete(state));
         return current;
       });
-    }, 1_000 / Math.max(1, config.fps * fpsMultiplier));
-    return () => window.clearInterval(interval);
-  }, [fpsMultiplier, frames.length, onComplete, state]);
+    }, frameDuration);
+    const completionDelay =
+      config.durationMs ?? (config.loop ? undefined : frameDuration * Math.max(1, frames.length));
+    const completion =
+      completionDelay === undefined
+        ? undefined
+        : window.setTimeout(() => onCompleteRef.current(state), completionDelay);
+    return () => {
+      window.clearInterval(interval);
+      if (completion !== undefined) window.clearTimeout(completion);
+    };
+  }, [fpsMultiplier, frames.length, state]);
 
   return (
     <img

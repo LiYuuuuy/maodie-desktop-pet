@@ -55,4 +55,12 @@ describe("pet state machine", () => {
     );
     expect(complete.mode).toBe("chat_open");
   });
+
+  it("leaves dragging mode when the native window drag finishes", () => {
+    const dragging = reducePet(INITIAL_PET_STATE, { type: "PET_DRAG_START" }, DEFAULT_SETTINGS);
+    expect(dragging.mode).toBe("dragging_pet");
+    const finished = reducePet(dragging, { type: "PET_DRAG_END" }, DEFAULT_SETTINGS);
+    expect(finished.mode).toBeNull();
+    expect(finished.visual).toBe("sitting");
+  });
 });

@@ -2,11 +2,14 @@
 
 ## 产物
 
-- 六个状态，每个状态严格 8 帧，路径为 `src/assets/pet/<state>/00.png` 至 `07.png`。
+- 六个状态，每个状态 16 帧，路径为 `src/assets/pet/<state>/00.png` 至 `15.png`。
+- 奇数编号帧由相邻动作关键帧生成，用于提高时间采样密度；偶数编号帧保留原始动作关键帧。
 - 所有运行帧为 512×512 RGBA PNG；`walking` 朝右，向左由 CSS 水平镜像。
 - 原始 4×2 生成接触表保存在 `artifacts/asset-work/source-sheets/`。
+- 相邻关键帧的 4×2 中间帧表保存在 `artifacts/asset-work/midpoint-sheets/`。
 - 使用内置图像生成工具生成接触表；使用 `scripts/split_sprite_sheet.py` 切帧、转 RGBA、
-  去除纯绿背景。该脚本只使用 Python 标准库，便于复现。
+  去除纯绿背景，再由 `scripts/build_16_frame_set.py` 交错为 16 帧。脚本只使用 Python
+  标准库，便于复现。
 
 ## 各状态参考和补全
 
@@ -38,4 +41,4 @@
 
 - 半透明毛发边缘在不同桌面壁纸上的绿溢色可接受程度；
 - Retina 与 Windows 150%/200% 缩放下的轮廓和包浆强度；
-- 8 帧循环在目标平台窗口移动时的视觉连续性。
+- 16 帧循环在目标平台窗口移动时的视觉连续性。

@@ -16,6 +16,15 @@ export function SettingsApp() {
     void loadSettings().then(setSettings);
   }, []);
 
+  useEffect(() => {
+    void getAllWindows()
+      .then((windows) => windows.find((window) => window.label === "pet"))
+      .then((pet) =>
+        pet?.setSize(new LogicalSize(256 * settings.pet.scale, 256 * settings.pet.scale)),
+      )
+      .catch((error) => setStatus(`缩放预览失败：${String(error)}`));
+  }, [settings.pet.scale]);
+
   const save = async () => {
     let next = settings;
     if (apiKey.trim()) {
@@ -54,8 +63,8 @@ export function SettingsApp() {
 
   return (
     <main className="dialog-window settings-window">
-      <header className="dialog-titlebar" data-tauri-drag-region>
-        <div><strong>耄耋设置</strong><span>别乱调，调坏了我可不管。</span></div>
+      <header className="dialog-titlebar">
+        <div className="dialog-drag-region" data-tauri-drag-region><strong>耄耋设置</strong><span>别乱调，调坏了我可不管。</span></div>
         <button onClick={() => void getCurrentWindow().hide()}>×</button>
       </header>
       <SettingsForm value={settings} apiKey={apiKey} onApiKey={setApiKey} onChange={setSettings} />

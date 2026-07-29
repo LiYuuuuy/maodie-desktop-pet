@@ -119,8 +119,8 @@ export function ChatApp() {
 
   return (
     <main className="dialog-window chat-window">
-      <header className="dialog-titlebar" data-tauri-drag-region>
-        <div>
+      <header className="dialog-titlebar">
+        <div className="dialog-drag-region" data-tauri-drag-region>
           <strong>圆头耄耋</strong>
           <span>{requestId ? "正在琢磨…" : "嘴硬但能聊"}</span>
         </div>

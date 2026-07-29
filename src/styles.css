@@ -86,11 +86,16 @@ button { cursor: pointer; }
   background: rgb(237 230 211 / 88%);
   box-shadow: 0 2px 8px rgb(58 48 32 / 10%);
 }
-.dialog-titlebar > div { display: grid; gap: 2px; pointer-events: none; }
+.dialog-titlebar > div { display: grid; gap: 2px; }
+.dialog-drag-region { flex: 1; align-self: stretch; align-content: center; }
+.dialog-drag-region, .dialog-drag-region * { cursor: default; }
+.dialog-drag-region * { pointer-events: none; }
 .dialog-titlebar strong { font-size: 17px; letter-spacing: .04em; }
 .dialog-titlebar span { color: #756a58; font-size: 11px; }
 .dialog-titlebar nav { display: flex; gap: 5px; }
 .dialog-titlebar button {
+  position: relative;
+  z-index: 1;
   width: 30px;
   height: 30px;
   border: 1px solid #a99b81;

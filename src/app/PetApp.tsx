@@ -109,6 +109,13 @@ export function PetApp() {
   }, [machine.direction, machine.mode, machine.visual, settings]);
 
   useEffect(() => {
+    void Promise.all([
+      appWindow.setAlwaysOnTop(settings.pet.alwaysOnTop),
+      appWindow.setSize(new LogicalSize(256 * settings.pet.scale, 256 * settings.pet.scale)),
+    ]).catch(() => undefined);
+  }, [appWindow, settings.pet.alwaysOnTop, settings.pet.scale]);
+
+  useEffect(() => {
     let unlisten: (() => void) | undefined;
     void getCurrentWebview()
       .onDragDropEvent((event) => {
@@ -221,7 +228,15 @@ export function PetApp() {
       dragStarted.current = true;
       scheduler.cancel();
       dispatch({ type: "PET_DRAG_START" });
-      void appWindow.startDragging();
+      void appWindow
+        .startDragging()
+        .catch(() => undefined)
+        .finally(() => {
+          pointerStart.current = undefined;
+          dragStarted.current = false;
+          dispatch({ type: "PET_DRAG_END" });
+          void savePosition();
+        });
     }
   };
 
@@ -239,6 +254,10 @@ export function PetApp() {
     dragStarted.current = false;
   };
 
+  const onPointerCancel = () => {
+    if (!dragStarted.current) pointerStart.current = undefined;
+  };
+
   const onContextMenu = (event: React.MouseEvent) => {
     event.preventDefault();
     scheduler.cancel();
@@ -252,6 +271,7 @@ export function PetApp() {
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
+      onPointerCancel={onPointerCancel}
       onContextMenu={onContextMenu}
     >
       <PetSprite
