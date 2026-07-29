@@ -1,0 +1,196 @@
+:root {
+  font-family: "Noto Sans SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #312d27;
+  background: transparent;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+button, input, textarea, select { font: inherit; }
+button { cursor: pointer; }
+
+.pet-window {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  user-select: none;
+  touch-action: none;
+  cursor: grab;
+  overflow: hidden;
+}
+
+.pet-window:active { cursor: grabbing; }
+.pet-sprite {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 3px rgb(29 23 14 / 24%));
+}
+
+.pet-window.is-drop-target .pet-sprite {
+  filter: drop-shadow(0 0 10px #f4ca65) saturate(1.1);
+}
+
+.drop-overlay {
+  position: absolute;
+  inset: 12%;
+  display: grid;
+  place-content: center;
+  gap: 5px;
+  text-align: center;
+  border: 2px dashed rgb(255 245 190 / 86%);
+  border-radius: 42%;
+  background: rgb(60 46 24 / 60%);
+  color: #fff6cb;
+  text-shadow: 0 1px 2px #000;
+  pointer-events: none;
+}
+.drop-overlay span { font-weight: 700; }
+.drop-overlay small { font-size: 11px; }
+
+.toast {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  width: max-content;
+  max-width: 94%;
+  transform: translateX(-50%);
+  padding: 7px 11px;
+  border: 1px solid rgb(83 66 41 / 65%);
+  border-radius: 7px;
+  background: rgb(240 230 203 / 94%);
+  color: #31281e;
+  font-size: 12px;
+  box-shadow: 0 3px 12px rgb(0 0 0 / 24%);
+}
+
+.dialog-window {
+  height: 100%;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 3px, rgb(93 76 50 / 2%) 3px 4px),
+    #e8dfca;
+  border: 1px solid #83755d;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 35%);
+}
+
+.dialog-titlebar {
+  min-height: 62px;
+  padding: 11px 12px 9px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #a99a7d;
+  background: rgb(237 230 211 / 88%);
+  box-shadow: 0 2px 8px rgb(58 48 32 / 10%);
+}
+.dialog-titlebar > div { display: grid; gap: 2px; pointer-events: none; }
+.dialog-titlebar strong { font-size: 17px; letter-spacing: .04em; }
+.dialog-titlebar span { color: #756a58; font-size: 11px; }
+.dialog-titlebar nav { display: flex; gap: 5px; }
+.dialog-titlebar button {
+  width: 30px;
+  height: 30px;
+  border: 1px solid #a99b81;
+  border-radius: 4px;
+  background: #e7ddc5;
+  color: #574c3a;
+}
+
+.chat-window { display: grid; grid-template-rows: auto 1fr auto auto; }
+.message-list {
+  overflow: auto;
+  padding: 16px 14px;
+  scrollbar-color: #a4977d transparent;
+}
+.chat-empty { margin: 25% auto 0; text-align: center; color: #736854; }
+.chat-empty span { font-weight: 700; }
+.chat-empty p { font-size: 13px; }
+.message {
+  width: fit-content;
+  max-width: 88%;
+  margin-bottom: 12px;
+  padding: 9px 11px;
+  border: 1px solid #b4a689;
+  border-radius: 5px 12px 12px;
+  background: rgb(246 241 226 / 88%);
+  box-shadow: 0 2px 5px rgb(56 45 27 / 8%);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.message-user { margin-left: auto; border-radius: 12px 5px 12px 12px; background: #d7ccb2; }
+.message header { margin-bottom: 4px; color: #766a55; font-size: 10px; font-weight: 700; }
+.message p { margin: 0 0 7px; }
+.message p:last-child { margin-bottom: 0; }
+.message pre { max-width: 100%; overflow-x: auto; padding: 8px; background: #312e29; color: #eee7d8; }
+.message code { font-family: "SFMono-Regular", Consolas, monospace; font-size: .88em; }
+.message small { color: #9d5d50; }
+
+.error-banner {
+  padding: 7px 12px;
+  border-block: 1px solid #c58f84;
+  background: #f3d8d1;
+  color: #7b3026;
+  font-size: 12px;
+}
+.composer { padding: 10px; border-top: 1px solid #aa9c81; background: rgb(237 230 211 / 92%); }
+.composer textarea {
+  width: 100%;
+  resize: none;
+  padding: 9px;
+  border: 1px solid #a59880;
+  border-radius: 5px;
+  outline: none;
+  background: #fbf7ea;
+  color: #2f2a22;
+}
+.composer textarea:focus { border-color: #766a54; box-shadow: 0 0 0 2px rgb(118 106 84 / 15%); }
+.composer > div, .settings-actions { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 8px; }
+
+.primary-button, .text-button {
+  min-height: 32px;
+  padding: 5px 13px;
+  border: 1px solid #776b55;
+  border-radius: 4px;
+  background: #665b48;
+  color: #fffaf0;
+}
+.primary-button:disabled { opacity: .45; cursor: default; }
+.text-button { border-color: transparent; background: transparent; color: #605543; }
+.stop-button, .danger { color: #9c3f32; }
+
+.settings-window { display: grid; grid-template-rows: auto 1fr auto; }
+.settings-sections { overflow: auto; padding: 15px 18px 24px; }
+.settings-sections section { padding: 4px 2px 15px; border-bottom: 1px dashed #b3a78f; }
+.settings-sections h2 { margin: 11px 0; font-size: 14px; }
+.settings-sections label { display: grid; gap: 5px; margin: 9px 0; font-size: 12px; }
+.settings-sections label.check { display: flex; align-items: center; }
+.settings-sections input:not([type="checkbox"]):not([type="range"]), .settings-sections select {
+  width: 100%;
+  min-height: 32px;
+  border: 1px solid #a99b80;
+  border-radius: 4px;
+  background: #fbf7eb;
+  color: #332d25;
+  padding: 5px 7px;
+}
+.settings-sections output { float: right; color: #756a58; }
+.two-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.muted { color: #756b5b; font-size: 11px; line-height: 1.5; }
+.settings-actions { min-height: 56px; margin: 0; padding: 8px 14px; border-top: 1px solid #a99b80; background: #eee6d3; }
+.settings-actions span { margin-right: auto; color: #635945; font-size: 12px; }
+
+@media (prefers-color-scheme: dark) {
+  .dialog-window { color: #e7dfcf; background: #302d28; border-color: #5d574c; }
+  .dialog-titlebar, .composer, .settings-actions { background: #3a3730; border-color: #5d574c; }
+  .dialog-titlebar span, .muted { color: #aaa18f; }
+  .message { background: #403c34; border-color: #665f52; }
+  .message-user { background: #50483b; }
+  .composer textarea, .settings-sections input:not([type="checkbox"]):not([type="range"]), .settings-sections select {
+    background: #292722;
+    color: #eee6d7;
+    border-color: #655e51;
+  }
+}

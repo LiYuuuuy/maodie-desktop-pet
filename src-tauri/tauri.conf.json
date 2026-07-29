@@ -1,0 +1,69 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "圆头耄耋",
+  "version": "0.1.0",
+  "identifier": "com.maodie.desktop-pet",
+  "build": {
+    "beforeDevCommand": "pnpm dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "pnpm build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "macOSPrivateApi": true,
+    "windows": [
+      {
+        "label": "pet",
+        "title": "圆头耄耋",
+        "width": 256,
+        "height": 256,
+        "minWidth": 128,
+        "minHeight": 128,
+        "transparent": true,
+        "decorations": false,
+        "shadow": false,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "resizable": false,
+        "maximizable": false,
+        "fullscreen": false
+      },
+      {
+        "label": "chat",
+        "title": "与耄耋对话",
+        "url": "index.html?window=chat",
+        "width": 420,
+        "height": 520,
+        "visible": false,
+        "decorations": false,
+        "alwaysOnTop": true,
+        "resizable": true,
+        "minWidth": 340,
+        "minHeight": 400
+      },
+      {
+        "label": "settings",
+        "title": "耄耋设置",
+        "url": "index.html?window=settings",
+        "width": 560,
+        "height": 680,
+        "visible": false,
+        "decorations": false,
+        "resizable": true,
+        "minWidth": 460,
+        "minHeight": 520
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' asset: http://asset.localhost data:; style-src 'self' 'unsafe-inline'; connect-src 'self' ipc: http://ipc.localhost"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "category": "Utility",
+    "shortDescription": "一只有点不服气的圆头橘猫桌宠",
+    "longDescription": "支持随机动画、文件投喂和实时大模型对话的跨平台桌宠。",
+    "copyright": "Reference character imagery belongs to its respective rights holder."
+  }
+}
