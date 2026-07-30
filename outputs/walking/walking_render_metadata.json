@@ -1,32 +1,156 @@
 {
-  "method": "persistent five-layer walking rig; no whole-image optical flow",
-  "runtimeFrames": 64,
-  "fps": 24,
-  "cycleSeconds": 2.6667,
-  "keyframes": [
-    "walking_01.png",
-    "walking_02.png",
-    "walking_03.png",
-    "walking_04.png",
-    "walking_05.png",
-    "walking_06.png",
-    "walking_07.png",
-    "walking_08.png"
+  "method": "Eight whole-cat keyframes rendered from one real-cat side-view video stride and its verified whole-body pose specification; no static torso rig and no whole-image optical-flow in-betweening.",
+  "generator": "OpenAI built-in image generation",
+  "promptSummary": "Maodie identity and patina, exact 4x2 video-driven walk poses, persistent four-limb identities, whole-body weight shift, pure green background.",
+  "sourceSheet": "work/walking/walking_render_v3/walking_video_driven_green.png",
+  "referenceFrames": "work/walking/walking_reference_frames",
+  "poseDebug": "work/walking/walking_pose_debug",
+  "frameCount": 8,
+  "fps": 7.687,
+  "cycleSeconds": 1.0406,
+  "scale": 0.88,
+  "bounds": [
+    [
+      77,
+      234,
+      435,
+      488
+    ],
+    [
+      82,
+      224,
+      431,
+      487
+    ],
+    [
+      89,
+      226,
+      422,
+      488
+    ],
+    [
+      88,
+      231,
+      423,
+      487
+    ],
+    [
+      81,
+      217,
+      431,
+      488
+    ],
+    [
+      83,
+      220,
+      429,
+      488
+    ],
+    [
+      80,
+      227,
+      432,
+      487
+    ],
+    [
+      82,
+      238,
+      430,
+      488
+    ]
   ],
-  "limbPhaseOffsets": {
-    "LF": 0,
-    "RF": 4,
-    "LH": 6,
-    "RH": 2
-  },
-  "renderOrder": [
-    "RF",
-    "RH",
-    "LF",
-    "LH",
-    "body"
+  "visibleAreas": [
+    41310,
+    41868,
+    40570,
+    40252,
+    42526,
+    42927,
+    42518,
+    39535
   ],
-  "bodyScale": 0.6,
-  "legScale": 0.5,
-  "baselineY": 487
+  "bodyCenters": [
+    [
+      250,
+      300
+    ],
+    [
+      251,
+      298
+    ],
+    [
+      252,
+      299
+    ],
+    [
+      252,
+      303
+    ],
+    [
+      251,
+      306
+    ],
+    [
+      249,
+      304
+    ],
+    [
+      248,
+      301
+    ],
+    [
+      249,
+      299
+    ]
+  ],
+  "limbStates": [
+    {
+      "LF": "mid_stance",
+      "RF": "lift",
+      "LH": "late_stance",
+      "RH": "mid_stance"
+    },
+    {
+      "LF": "late_stance",
+      "RF": "reach",
+      "LH": "late_stance",
+      "RH": "mid_stance"
+    },
+    {
+      "LF": "late_stance",
+      "RF": "contact",
+      "LH": "toe_off",
+      "RH": "late_stance"
+    },
+    {
+      "LF": "late_stance",
+      "RF": "early_stance",
+      "LH": "swing",
+      "RH": "late_stance"
+    },
+    {
+      "LF": "lift",
+      "RF": "mid_stance",
+      "LH": "contact",
+      "RH": "late_stance"
+    },
+    {
+      "LF": "swing",
+      "RF": "late_stance",
+      "LH": "early_stance",
+      "RH": "lift"
+    },
+    {
+      "LF": "contact",
+      "RF": "toe_off",
+      "LH": "mid_stance",
+      "RH": "swing"
+    },
+    {
+      "LF": "early_stance",
+      "RF": "lift",
+      "LH": "late_stance",
+      "RH": "contact"
+    }
+  ]
 }

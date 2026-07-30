@@ -1,140 +1,240 @@
 {
-  "name": "maodie-walking-v7",
+  "name": "maodie-walking-video-driven-v1",
+  "schemaVersion": 2,
+  "frameCount": 8,
+  "loop": true,
   "direction": "right",
+  "drivingReference": {
+    "type": "real_cat_side_view_video",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Whole-Body-Mechanics-of-Stealthy-Walking-in-Cats-pone.0003808.s002.ogv",
+    "sourcePaper": "https://doi.org/10.1371/journal.pone.0003808",
+    "license": "CC BY 2.5",
+    "sourcePlaybackStartSeconds": 2.9,
+    "sourcePlaybackEndSeconds": 7.24,
+    "sourcePlaybackFps": 29.97,
+    "captureFps": 125,
+    "naturalCycleSeconds": 1.0406,
+    "notes": "One complete extended-walk stride; frames are horizontally flipped to face right."
+  },
   "canvas": {
     "width": 512,
     "height": 512,
-    "baselineY": 487,
-    "centerX": 256
+    "groundY": 436
   },
   "playback": {
-    "keyframeCount": 8,
-    "runtimeFrameCount": 64,
-    "fps": 24,
-    "cycleSeconds": 2.6667,
-    "timingPolicy": "fixed-rate; no held or slow-played frames"
+    "fps": 7.687,
+    "cycleSeconds": 1.0406,
+    "timingPolicy": "one video-derived pose per frame; no held frames and no fixed-body limb puppet"
   },
-  "renderOrder": [
-    "RF",
-    "RH",
-    "body",
-    "LF",
-    "LH"
-  ],
-  "phaseVocabulary": [
-    "contact",
-    "early_stance",
-    "mid_stance",
-    "late_stance",
-    "toe_off",
-    "lift",
-    "swing",
-    "reach"
-  ],
   "limbs": {
     "LF": {
       "identity": "left_front_near",
-      "anchor": [326, 397],
-      "phaseOffset": 0,
-      "colorBgr": [70, 70, 235],
-      "occlusion": "near; always in front of torso"
+      "debugColor": "#ef4444",
+      "occlusion": "near-side; rendered in front of torso"
     },
     "RF": {
       "identity": "right_front_far",
-      "anchor": [307, 399],
-      "phaseOffset": 4,
-      "colorBgr": [235, 110, 55],
-      "occlusion": "far; upper limb always behind torso"
+      "debugColor": "#3b82f6",
+      "occlusion": "far-side; upper segment remains behind torso"
     },
     "LH": {
       "identity": "left_hind_near",
-      "anchor": [190, 395],
-      "phaseOffset": 6,
-      "colorBgr": [65, 190, 70],
-      "occlusion": "near; always in front of torso"
+      "debugColor": "#22c55e",
+      "occlusion": "near-side; rendered in front of torso"
     },
     "RH": {
       "identity": "right_hind_far",
-      "anchor": [169, 397],
-      "phaseOffset": 2,
-      "colorBgr": [40, 215, 235],
-      "occlusion": "far; upper limb always behind torso"
+      "debugColor": "#eab308",
+      "occlusion": "far-side; upper segment remains behind torso"
     }
   },
+  "bodyMotion": {
+    "required": [
+      "center_of_mass_bob",
+      "changing_back_line",
+      "alternating_shoulder_and_hip_advance",
+      "subtle_head_follow",
+      "tail_balance"
+    ],
+    "rootMotion": "World translation is handled by the desktop app. The sprite retains only within-stride weight transfer.",
+    "bodyMustNotBeLocked": true,
+    "scale": "stable",
+    "maximumLocalCenterShiftPx": 7,
+    "maximumLocalVerticalBobPx": 8
+  },
+  "renderOrder": ["RF", "RH", "body", "LF", "LH"],
   "frames": [
     {
       "index": 1,
-      "LF": "contact",
-      "RF": "toe_off",
-      "LH": "swing",
-      "RH": "mid_stance",
-      "support": ["LF", "RF", "RH"]
+      "phase": "RF_lift",
+      "sourceSeconds": 2.9,
+      "support": ["LF", "LH", "RH"],
+      "occlusionOrder": ["RF", "RH", "body", "LF", "LH"],
+      "body": {
+        "center": [250, 300],
+        "shoulder": [326, 298],
+        "hip": [178, 305],
+        "head": [382, 272],
+        "headAngleDegrees": 0.5,
+        "backArchPx": 0,
+        "tailTip": [105, 202]
+      },
+      "LF": {"state": "mid_stance", "joints": [[329, 313], [337, 370], [347, 436]]},
+      "RF": {"state": "lift", "joints": [[312, 317], [340, 358], [370, 408]]},
+      "LH": {"state": "late_stance", "joints": [[178, 319], [164, 375], [148, 436]]},
+      "RH": {"state": "mid_stance", "joints": [[198, 322], [205, 378], [213, 436]]}
     },
     {
       "index": 2,
-      "LF": "early_stance",
-      "RF": "lift",
-      "LH": "reach",
-      "RH": "late_stance",
-      "support": ["LF", "RH"]
+      "phase": "RF_reach",
+      "sourceSeconds": 3.4425,
+      "support": ["LF", "LH", "RH"],
+      "occlusionOrder": ["RF", "RH", "body", "LF", "LH"],
+      "body": {
+        "center": [251, 298],
+        "shoulder": [328, 295],
+        "hip": [179, 304],
+        "head": [385, 269],
+        "headAngleDegrees": 0,
+        "backArchPx": -1,
+        "tailTip": [108, 196]
+      },
+      "LF": {"state": "late_stance", "joints": [[331, 310], [335, 369], [340, 436]]},
+      "RF": {"state": "reach", "joints": [[314, 314], [354, 351], [395, 416]]},
+      "LH": {"state": "late_stance", "joints": [[179, 318], [158, 374], [138, 436]]},
+      "RH": {"state": "mid_stance", "joints": [[199, 321], [204, 378], [207, 436]]}
     },
     {
       "index": 3,
-      "LF": "mid_stance",
-      "RF": "swing",
-      "LH": "contact",
-      "RH": "toe_off",
-      "support": ["LF", "LH", "RH"]
+      "phase": "RF_contact",
+      "sourceSeconds": 3.985,
+      "support": ["LF", "RF", "LH", "RH"],
+      "occlusionOrder": ["RF", "RH", "body", "LF", "LH"],
+      "body": {
+        "center": [252, 299],
+        "shoulder": [331, 297],
+        "hip": [181, 303],
+        "head": [388, 270],
+        "headAngleDegrees": -1,
+        "backArchPx": 0,
+        "tailTip": [112, 190]
+      },
+      "LF": {"state": "late_stance", "joints": [[334, 312], [334, 371], [331, 436]]},
+      "RF": {"state": "contact", "joints": [[317, 316], [358, 361], [393, 436]]},
+      "LH": {"state": "toe_off", "joints": [[181, 317], [154, 374], [132, 436]]},
+      "RH": {"state": "late_stance", "joints": [[201, 320], [202, 378], [202, 436]]}
     },
     {
       "index": 4,
-      "LF": "late_stance",
-      "RF": "reach",
-      "LH": "early_stance",
-      "RH": "lift",
-      "support": ["LF", "LH"]
+      "phase": "LH_swing",
+      "sourceSeconds": 4.5275,
+      "support": ["LF", "RF", "RH"],
+      "occlusionOrder": ["RF", "RH", "body", "LF", "LH"],
+      "body": {
+        "center": [252, 303],
+        "shoulder": [333, 301],
+        "hip": [182, 307],
+        "head": [388, 274],
+        "headAngleDegrees": -1.5,
+        "backArchPx": 2,
+        "tailTip": [114, 187]
+      },
+      "LF": {"state": "late_stance", "joints": [[336, 316], [331, 375], [324, 436]]},
+      "RF": {"state": "early_stance", "joints": [[319, 320], [355, 369], [382, 436]]},
+      "LH": {"state": "swing", "joints": [[182, 321], [194, 367], [180, 408]]},
+      "RH": {"state": "late_stance", "joints": [[202, 324], [198, 380], [194, 436]]}
     },
     {
       "index": 5,
-      "LF": "toe_off",
-      "RF": "contact",
-      "LH": "mid_stance",
-      "RH": "swing",
-      "support": ["LF", "RF", "LH"]
+      "phase": "LH_contact_LF_lift",
+      "sourceSeconds": 5.07,
+      "support": ["RF", "LH", "RH"],
+      "occlusionOrder": ["RF", "RH", "body", "LF", "LH"],
+      "body": {
+        "center": [251, 306],
+        "shoulder": [331, 304],
+        "hip": [183, 310],
+        "head": [385, 277],
+        "headAngleDegrees": -0.5,
+        "backArchPx": 3,
+        "tailTip": [112, 192]
+      },
+      "LF": {"state": "lift", "joints": [[334, 319], [326, 369], [320, 420]]},
+      "RF": {"state": "mid_stance", "joints": [[317, 323], [349, 374], [369, 436]]},
+      "LH": {"state": "contact", "joints": [[183, 324], [205, 379], [225, 436]]},
+      "RH": {"state": "late_stance", "joints": [[203, 327], [194, 382], [186, 436]]}
     },
     {
       "index": 6,
-      "LF": "lift",
-      "RF": "early_stance",
-      "LH": "late_stance",
-      "RH": "reach",
-      "support": ["RF", "LH"]
+      "phase": "LF_swing_RH_lift",
+      "sourceSeconds": 5.6125,
+      "support": ["RF", "LH"],
+      "occlusionOrder": ["RF", "RH", "body", "LF", "LH"],
+      "body": {
+        "center": [249, 304],
+        "shoulder": [328, 302],
+        "hip": [182, 308],
+        "head": [382, 275],
+        "headAngleDegrees": 0.5,
+        "backArchPx": 2,
+        "tailTip": [108, 199]
+      },
+      "LF": {"state": "swing", "joints": [[331, 317], [350, 356], [360, 405]]},
+      "RF": {"state": "late_stance", "joints": [[314, 321], [339, 375], [354, 436]]},
+      "LH": {"state": "early_stance", "joints": [[182, 322], [202, 380], [216, 436]]},
+      "RH": {"state": "lift", "joints": [[202, 325], [190, 370], [182, 418]]}
     },
     {
       "index": 7,
-      "LF": "swing",
-      "RF": "mid_stance",
-      "LH": "toe_off",
-      "RH": "contact",
-      "support": ["RF", "LH", "RH"]
+      "phase": "LF_contact_RH_swing",
+      "sourceSeconds": 6.155,
+      "support": ["LF", "RF", "LH"],
+      "occlusionOrder": ["RF", "RH", "body", "LF", "LH"],
+      "body": {
+        "center": [248, 301],
+        "shoulder": [325, 299],
+        "hip": [179, 305],
+        "head": [379, 272],
+        "headAngleDegrees": 1,
+        "backArchPx": 0,
+        "tailTip": [103, 205]
+      },
+      "LF": {"state": "contact", "joints": [[328, 314], [363, 367], [386, 436]]},
+      "RF": {"state": "toe_off", "joints": [[311, 318], [327, 374], [340, 436]]},
+      "LH": {"state": "mid_stance", "joints": [[179, 319], [197, 378], [204, 436]]},
+      "RH": {"state": "swing", "joints": [[199, 322], [210, 362], [220, 407]]}
     },
     {
       "index": 8,
-      "LF": "reach",
-      "RF": "late_stance",
-      "LH": "lift",
-      "RH": "early_stance",
-      "support": ["RF", "RH"],
-      "loopTo": 1
+      "phase": "RH_contact_RF_lift",
+      "sourceSeconds": 6.6975,
+      "support": ["LF", "LH", "RH"],
+      "occlusionOrder": ["RF", "RH", "body", "LF", "LH"],
+      "body": {
+        "center": [249, 299],
+        "shoulder": [325, 297],
+        "hip": [177, 304],
+        "head": [380, 270],
+        "headAngleDegrees": 0.5,
+        "backArchPx": -1,
+        "tailTip": [102, 202]
+      },
+      "LF": {"state": "early_stance", "joints": [[328, 312], [355, 369], [372, 436]]},
+      "RF": {"state": "lift", "joints": [[311, 316], [326, 367], [326, 420]]},
+      "LH": {"state": "late_stance", "joints": [[177, 318], [187, 377], [192, 436]]},
+      "RH": {"state": "contact", "joints": [[197, 321], [218, 377], [235, 436]]},
+      "loopTo": 1,
+      "loopNote": "The omitted endpoint at 7.24s repeats frame 1's RF-lift phase; frame 8 advances naturally into it."
     }
   ],
   "invariants": {
     "limbCount": 4,
     "limbIdentityMustPersist": true,
+    "wholeBodyMotionRequired": true,
+    "bodyCenterMustNotBeLocked": true,
     "frame8ToFrame1MustBeContinuous": true,
     "bodyScaleLocked": true,
-    "bodyCenterDriftMaxPx": 1,
-    "baselineDriftMaxPx": 0,
-    "wholeImageOpticalFlowAllowed": false
+    "independentFrameGenerationForbidden": true,
+    "staticBodyPuppetRigForbidden": true
   }
 }

@@ -43,7 +43,7 @@ export const ANIMATION_CONFIG: Record<VisualState, AnimationConfig> = {
     loop: true,
     optionalTail: { startFrame: 16, playProbability: 0.25 },
   },
-  walking: { fps: 24, loop: true },
+  walking: { fps: 7.687, loop: true },
   sleeping: { fps: 12, loop: true },
   happy: { fps: 24, loop: true, durationMs: 2_000 },
   petting: { fps: 24, loop: false },

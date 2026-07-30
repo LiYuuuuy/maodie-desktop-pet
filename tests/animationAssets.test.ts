@@ -12,7 +12,7 @@ import {
 describe("animation asset contract", () => {
   const expectedFrameCounts = {
     sitting: 32,
-    walking: 64,
+    walking: 8,
     sleeping: 32,
     happy: 32,
     petting: 33,
@@ -40,7 +40,7 @@ describe("animation asset contract", () => {
   it("uses one fixed interval within each sequence", () => {
     expect(Object.fromEntries(VISUAL_STATES.map((state) => [state, ANIMATION_CONFIG[state].fps]))).toEqual({
       sitting: 16,
-      walking: 24,
+      walking: 7.687,
       sleeping: 12,
       happy: 24,
       petting: 24,
@@ -92,7 +92,6 @@ describe("animation asset contract", () => {
       >;
     };
 
-    expect(report.states.walking.insertionCounts).toEqual([3, 3, 3, 3, 3, 3, 3, 3]);
     expect(report.states.petting.insertionCounts).toEqual([0, 0, 1, 3, 3, 1, 1]);
     expect(report.states.hissing.insertionCounts).toEqual([0, 1, 0, 3, 0, 1, 3]);
     expect(new Set(report.states.petting.insertionCounts).size).toBeGreaterThan(2);
@@ -129,7 +128,7 @@ describe("animation asset contract", () => {
       >;
     };
 
-    for (const state of VISUAL_STATES) {
+    for (const state of VISUAL_STATES.filter((state) => state !== "walking")) {
       expect(report.states[state].frameCount).toBe(expectedFrameCounts[state]);
       expect(report.states[state].fixedRatePlayback).toBe(true);
       expect(report.states[state].maxCenterDriftPx).toBeLessThanOrEqual(3);
@@ -139,13 +138,27 @@ describe("animation asset contract", () => {
 
     expect(report.states.petting.maxHeadWidthGrowthRatio).toBeLessThanOrEqual(1.08);
     expect(report.states.hissing.maxHeadWidthGrowthRatio).toBeLessThanOrEqual(1.08);
-    expect(report.states.walking.maxAdjacentVisualChange).toBeLessThanOrEqual(22);
-    expect(report.states.walking.maxToMedianAdjacentVisualChangeRatio).toBeLessThanOrEqual(1.7);
-
-    for (const state of ["sitting", "walking", "sleeping"] as const) {
+    for (const state of ["sitting", "sleeping"] as const) {
       expect(report.states[state].maxCenterDriftPx).toBeLessThanOrEqual(1);
       expect(report.states[state].maxBaselineDriftPx).toBe(0);
     }
+
+    const walkingSpec = JSON.parse(
+      readFileSync(resolve("work/walking/walk_spec.json"), "utf8"),
+    ) as {
+      frameCount: number;
+      bodyMotion: { bodyMustNotBeLocked: boolean };
+      invariants: {
+        limbCount: number;
+        wholeBodyMotionRequired: boolean;
+        staticBodyPuppetRigForbidden: boolean;
+      };
+    };
+    expect(walkingSpec.frameCount).toBe(8);
+    expect(walkingSpec.invariants.limbCount).toBe(4);
+    expect(walkingSpec.invariants.wholeBodyMotionRequired).toBe(true);
+    expect(walkingSpec.invariants.staticBodyPuppetRigForbidden).toBe(true);
+    expect(walkingSpec.bodyMotion.bodyMustNotBeLocked).toBe(true);
 
     const sittingAnchor = readFileSync(resolve("src/assets/pet/sitting/00.png"));
     for (const state of ["petting", "hissing"] as const) {

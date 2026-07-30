@@ -1,0 +1,32 @@
+{
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Whole-Body-Mechanics-of-Stealthy-Walking-in-Cats-pone.0003808.s002.ogv",
+  "sourceAuthor": "Bishop K, Pai A, Schmitt D",
+  "sourcePaper": "https://doi.org/10.1371/journal.pone.0003808",
+  "license": "Creative Commons Attribution 2.5",
+  "licensePage": "https://creativecommons.org/licenses/by/2.5/",
+  "sourceVideo": {
+    "fps": 29.97,
+    "frameCount": 357,
+    "durationSeconds": 11.911911911911913
+  },
+  "selectedCycle": {
+    "startSeconds": 2.9,
+    "endSeconds": 7.24,
+    "durationSeconds": 4.34,
+    "naturalDurationSeconds": 1.0406,
+    "captureFps": 125,
+    "candidateFrameCount": 12,
+    "referenceFrameCount": 8,
+    "referenceTimestampsSeconds": [
+      2.9,
+      3.4425,
+      3.985,
+      4.5275,
+      5.07,
+      5.6125,
+      6.155,
+      6.6975
+    ]
+  },
+  "selectionReason": "Fixed scientific side-view camera, complete short-haired cat, clear limbs and tail, high-speed capture, and one uninterrupted natural extended-walk stride. Frames are flipped horizontally so the desktop-pet reference faces right."
+}
