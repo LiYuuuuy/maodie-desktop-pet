@@ -67,7 +67,7 @@ fn validate_public_config(config: &PublicProviderConfig) -> Result<Url, AppError
             "当前仅支持 OpenAI-compatible Provider",
         ));
     }
-    let base = Url::parse(&config.base_url)
+    let mut base = Url::parse(config.base_url.trim())
         .map_err(|_| AppError::new("invalid_base_url", "Base URL 格式无效"))?;
     if base.scheme() != "https" && !(cfg!(debug_assertions) && base.scheme() == "http") {
         return Err(AppError::new(
@@ -87,6 +87,15 @@ fn validate_public_config(config: &PublicProviderConfig) -> Result<Url, AppError
             "Temperature、输出长度或超时设置无效",
         ));
     }
+    base.set_query(None);
+    base.set_fragment(None);
+    let path = base.path().trim_end_matches('/').to_owned();
+    for suffix in ["/chat/completions", "/models"] {
+        if let Some(root) = path.strip_suffix(suffix) {
+            base.set_path(if root.is_empty() { "/" } else { root });
+            break;
+        }
+    }
     Ok(base)
 }
 
@@ -94,6 +103,21 @@ fn endpoint(base: &Url, path: &str) -> Result<Url, AppError> {
     let value = base.as_str().trim_end_matches('/');
     Url::parse(&format!("{value}/{path}"))
         .map_err(|_| AppError::new("invalid_base_url", "无法构造 Provider 请求地址"))
+}
+
+fn provider_error_message(status: reqwest::StatusCode, body: &str) -> String {
+    let detail = serde_json::from_str::<Value>(body).ok().and_then(|value| {
+        value["error"]["message"]
+            .as_str()
+            .or_else(|| value["message"].as_str())
+            .map(str::trim)
+            .filter(|message| !message.is_empty())
+            .map(ToOwned::to_owned)
+    });
+    match detail {
+        Some(message) => format!("HTTP {}：{message}", status.as_u16()),
+        None => format!("服务返回 HTTP {}", status.as_u16()),
+    }
 }
 
 #[tauri::command]
@@ -110,15 +134,17 @@ pub async fn validate_llm_config(
         .send()
         .await
         .map_err(|_| AppError::new("network_error", "无法连接到模型服务"))?;
-    if response.status().is_success() {
+    let status = response.status();
+    if status.is_success() {
         Ok(ValidationResult {
             valid: true,
             message: "连接成功".into(),
         })
     } else {
+        let body = response.text().await.unwrap_or_default();
         Ok(ValidationResult {
             valid: false,
-            message: format!("服务返回 HTTP {}", response.status().as_u16()),
+            message: provider_error_message(status, &body),
         })
     }
 }
@@ -178,9 +204,15 @@ async fn run_stream(
             .await
             .map_err(|_| AppError::new("network_error", "无法连接到模型服务"))?;
         if !response.status().is_success() {
+            let status = response.status();
+            let body = response.text().await.unwrap_or_default();
             return Err(AppError::new(
-                if response.status().as_u16() == 401 { "authentication" } else { "provider_error" },
-                format!("模型服务返回 HTTP {}", response.status().as_u16()),
+                if status.as_u16() == 401 {
+                    "authentication"
+                } else {
+                    "provider_error"
+                },
+                provider_error_message(status, &body),
             ));
         }
         let mut stream = response.bytes_stream();
@@ -298,5 +330,29 @@ mod tests {
             validate_public_config(&value).unwrap_err().code,
             "invalid_config"
         );
+    }
+
+    #[test]
+    fn accepts_full_openai_compatible_endpoint_and_normalizes_it() {
+        let mut value = config();
+        value.base_url = "https://example.com/v1/chat/completions".into();
+        let base = validate_public_config(&value).unwrap();
+        assert_eq!(
+            endpoint(&base, "chat/completions").unwrap().as_str(),
+            "https://example.com/v1/chat/completions"
+        );
+        assert_eq!(
+            endpoint(&base, "models").unwrap().as_str(),
+            "https://example.com/v1/models"
+        );
+    }
+
+    #[test]
+    fn extracts_structured_provider_error_message() {
+        let message = provider_error_message(
+            reqwest::StatusCode::UNAUTHORIZED,
+            r#"{"error":{"message":"invalid key"}}"#,
+        );
+        assert_eq!(message, "HTTP 401：invalid key");
     }
 }

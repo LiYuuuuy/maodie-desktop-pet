@@ -8,10 +8,24 @@ import {
 } from "../src/pet/types";
 
 describe("animation asset contract", () => {
-  it.each(VISUAL_STATES)("%s contains sixteen 512px RGBA frames", (state) => {
+  const expectedFrameCounts = {
+    sitting: 16,
+    walking: 32,
+    sleeping: 16,
+    happy: 16,
+    petting: 17,
+    hissing: 16,
+  } as const;
+
+  it.each(VISUAL_STATES)("%s contains the intended 512px RGBA frame sequence", (state) => {
     const directory = resolve("src/assets/pet", state);
     const names = readdirSync(directory).filter((name) => name.endsWith(".png")).sort();
-    expect(names).toEqual(Array.from({ length: 16 }, (_, index) => `${index.toString().padStart(2, "0")}.png`));
+    expect(names).toEqual(
+      Array.from(
+        { length: expectedFrameCounts[state] },
+        (_, index) => `${index.toString().padStart(2, "0")}.png`,
+      ),
+    );
 
     for (const name of names) {
       const png = readFileSync(resolve(directory, name));
@@ -21,15 +35,18 @@ describe("animation asset contract", () => {
     }
   });
 
-  it("uses restrained playback rates for the sixteen-frame sequences", () => {
+  it("uses one fixed interval within each sequence", () => {
     expect(Object.fromEntries(VISUAL_STATES.map((state) => [state, ANIMATION_CONFIG[state].fps]))).toEqual({
       sitting: 8,
-      walking: 10,
+      walking: 16,
       sleeping: 6,
       happy: 12,
-      petting: 10,
-      hissing: 10,
+      petting: 12,
+      hissing: 12,
     });
+    for (const state of VISUAL_STATES) {
+      expect(ANIMATION_CONFIG[state]).not.toHaveProperty("frameDurationsMs");
+    }
   });
 
   it("contains one reversible eight-frame clip for every idle-state pair", () => {
@@ -45,24 +62,50 @@ describe("animation asset contract", () => {
     }
   });
 
-  it("uses a fast attack, visible peak hold, and slower recovery for reactions", () => {
-    for (const state of ["petting", "hissing"] as const) {
-      const timings = ANIMATION_CONFIG[state].frameDurationsMs;
-      expect(timings).toHaveLength(16);
-      expect(new Set(timings).size).toBeGreaterThan(5);
-      expect(timings!.slice(0, 6).reduce((sum, duration) => sum + duration, 0)).toBeLessThan(320);
-      expect(timings!.slice(6, 10).reduce((sum, duration) => sum + duration, 0)).toBeGreaterThan(300);
-    }
-  });
-
-  it("keeps the generated subject anchored and color-matched", () => {
+  it("encodes reaction timing with different in-between counts", () => {
     const report = JSON.parse(
-      readFileSync(resolve("artifacts/asset-work/v3/quality-report.json"), "utf8"),
+      readFileSync(resolve("artifacts/asset-work/v4/quality-report.json"), "utf8"),
     ) as {
       states: Record<
         string,
         {
           frameCount: number;
+          fixedRatePlayback: boolean;
+          insertionCounts: number[];
+          maxCenterDriftPx: number;
+          maxBaselineDriftPx: number;
+          maxFurColorDistance: number;
+          maxHeadWidthGrowthRatio: number;
+        }
+      >;
+      idleTransitions: Record<
+        string,
+        {
+          frameCount: number;
+          maxCenterDriftPx: number;
+          maxBaselineDriftPx: number;
+          maxFurColorDistance: number;
+        }
+      >;
+    };
+
+    expect(report.states.walking.insertionCounts).toEqual([3, 3, 3, 3, 3, 3, 3, 3]);
+    expect(report.states.petting.insertionCounts).toEqual([0, 0, 1, 3, 3, 1, 1]);
+    expect(report.states.hissing.insertionCounts).toEqual([0, 1, 0, 3, 0, 1, 3]);
+    expect(new Set(report.states.petting.insertionCounts).size).toBeGreaterThan(2);
+    expect(new Set(report.states.hissing.insertionCounts).size).toBeGreaterThan(2);
+  });
+
+  it("keeps the generated subject anchored, color-matched, and subtly scaled", () => {
+    const report = JSON.parse(
+      readFileSync(resolve("artifacts/asset-work/v4/quality-report.json"), "utf8"),
+    ) as {
+      states: Record<
+        string,
+        {
+          frameCount: number;
+          fixedRatePlayback: boolean;
+          insertionCounts: number[];
           maxCenterDriftPx: number;
           maxBaselineDriftPx: number;
           maxFurColorDistance: number;
@@ -81,14 +124,15 @@ describe("animation asset contract", () => {
     };
 
     for (const state of VISUAL_STATES) {
-      expect(report.states[state].frameCount).toBe(16);
+      expect(report.states[state].frameCount).toBe(expectedFrameCounts[state]);
+      expect(report.states[state].fixedRatePlayback).toBe(true);
       expect(report.states[state].maxCenterDriftPx).toBeLessThanOrEqual(3);
       expect(report.states[state].maxBaselineDriftPx).toBeLessThanOrEqual(1);
       expect(report.states[state].maxFurColorDistance).toBeLessThanOrEqual(4);
     }
 
-    expect(report.states.petting.maxHeadWidthGrowthRatio).toBeGreaterThanOrEqual(1.25);
-    expect(report.states.hissing.maxHeadWidthGrowthRatio).toBeGreaterThanOrEqual(1.25);
+    expect(report.states.petting.maxHeadWidthGrowthRatio).toBeLessThanOrEqual(1.08);
+    expect(report.states.hissing.maxHeadWidthGrowthRatio).toBeLessThanOrEqual(1.08);
 
     for (const transition of Object.values(report.idleTransitions)) {
       expect(transition.frameCount).toBe(8);

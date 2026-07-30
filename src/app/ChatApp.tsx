@@ -9,6 +9,7 @@ import { MessageList } from "../components/MessageList";
 import { DEFAULT_SETTINGS } from "../settings/defaults";
 import { loadSettings } from "../settings/settingsStore";
 import type { AppSettings } from "../settings/schema";
+import { commandErrorMessage } from "../tauriError";
 
 const id = () => crypto.randomUUID();
 
@@ -33,6 +34,9 @@ export function ChatApp() {
     const unlisteners: UnlistenFn[] = [];
     const register = async () => {
       unlisteners.push(
+        await listen<AppSettings>("settings://changed", ({ payload }) => {
+          setSettings(payload);
+        }),
         await listen<ChatStreamEvent>("chat://delta", ({ payload }) => {
           if (!assistantId.current || payload.requestId !== requestId) return;
           setMessages((current) => appendDelta(current, assistantId.current!, payload.delta ?? ""));
@@ -66,11 +70,15 @@ export function ChatApp() {
   const send = useCallback(async () => {
     const content = input.trim();
     if (!content || requestId) return;
-    if (!settings.chat.providerConfig.apiKeyRef) {
-      setError("请先在设置中保存 API Key");
+    setError("");
+    let latest: AppSettings;
+    try {
+      latest = await loadSettings();
+      setSettings(latest);
+    } catch (reason) {
+      setError(commandErrorMessage(reason, "无法读取模型设置"));
       return;
     }
-    setError("");
     setInput("");
     const user: ChatMessage = { id: id(), role: "user", content, createdAt: Date.now(), status: "complete" };
     const assistant: ChatMessage = {
@@ -81,7 +89,7 @@ export function ChatApp() {
       status: "streaming",
     };
     assistantId.current = assistant.id;
-    const next = [...messages, user, assistant].slice(-settings.chat.maxMessages);
+    const next = [...messages, user, assistant].slice(-latest.chat.maxMessages);
     setMessages(next);
     try {
       const started = await invoke<string>("start_chat_stream", {
@@ -89,15 +97,15 @@ export function ChatApp() {
           messages: next
             .filter((message) => message.id !== assistant.id)
             .map(({ role, content: messageContent }) => ({ role, content: messageContent })),
-          config: settings.chat.providerConfig,
+          config: latest.chat.providerConfig,
         },
       });
       setRequestId(started);
     } catch (reason) {
-      setError(String(reason));
+      setError(commandErrorMessage(reason, "无法开始对话"));
       setMessages((current) => finishStream(current, assistant.id, "error"));
     }
-  }, [input, messages, requestId, settings.chat.maxMessages, settings.chat.providerConfig]);
+  }, [input, messages, requestId]);
 
   const stop = async () => {
     if (requestId) await invoke("cancel_chat_stream", { requestId });

@@ -114,7 +114,7 @@ export function PetSprite({ state, direction, fpsMultiplier = 1, onComplete }: P
         if (playback.completionState) {
           onCompleteRef.current(playback.completionState);
         }
-      }, animationFrameDuration(playback.config, current, fpsMultiplier));
+      }, animationFrameDuration(playback.config, fpsMultiplier));
     };
     scheduleNext();
 

@@ -4,8 +4,9 @@
 The source sheets are generated at 1536x1024, so each cell is 384x512.
 This script preserves that aspect ratio, removes the chroma-key background,
 aligns every subject to a shared center/baseline, normalizes fur color against
-the sitting anchor, creates a true 50% motion-compensated transition between
-neighboring keyframes, and prepares the three reversible idle transition clips.
+the sitting anchor, and inserts a variable number of recursively generated 50%
+poses between keyframes. Runtime playback remains fixed-rate: motion timing is
+encoded entirely by frame density, never by holding individual frames longer.
 
 OpenCV is intentionally an asset-authoring dependency only:
 
@@ -25,6 +26,15 @@ import numpy as np
 STATES = ("sitting", "walking", "sleeping", "happy", "petting", "hissing")
 LOOPING_STATES = {"sitting", "walking", "sleeping", "happy"}
 GENERATED_TRANSITION_STATES = {"walking", "petting", "hissing"}
+V4_STATES = {"walking", "petting", "hissing"}
+INSERTION_COUNTS: dict[str, tuple[int, ...]] = {
+    # Four equally spaced samples per gait interval prevent paw teleporting.
+    "walking": (3, 3, 3, 3, 3, 3, 3, 3),
+    # Fast chin lift, dense pleased hold, then a controlled return.
+    "petting": (0, 0, 1, 3, 3, 1, 1),
+    # Fast mouth opening/closing, dense full-hiss hold and neutral settle.
+    "hissing": (0, 1, 0, 3, 0, 1, 3),
+}
 IDLE_TRANSITIONS = (
     ("sitting", "walking"),
     ("sitting", "sleeping"),
@@ -287,10 +297,12 @@ def write_transition_sheet(path: Path, transitions: list[np.ndarray]) -> None:
 
 def write_final_sheet(path: Path, frames: list[np.ndarray]) -> None:
     cell_size = CANVAS_SIZE // 2
-    sheet = np.zeros((cell_size * 4, cell_size * 4, 3), dtype=np.uint8)
+    columns = 8 if len(frames) > 16 else 4
+    rows = (len(frames) + columns - 1) // columns
+    sheet = np.zeros((cell_size * rows, cell_size * columns, 3), dtype=np.uint8)
     sheet[:, :, 1] = 255
     for index, frame in enumerate(frames):
-        column, row = index % 4, index // 4
+        column, row = index % columns, index // columns
         preview = cv2.resize(
             composite_on_green(frame),
             (cell_size, cell_size),
@@ -328,6 +340,10 @@ def process(
     override_source_root: Path,
     generated_transition_root: Path,
     override_generated_transition_root: Path,
+    v4_source_root: Path,
+    v4_midpoint_root: Path,
+    v4_quarter_left_root: Path,
+    v4_quarter_right_root: Path,
     idle_transition_source_root: Path,
     output_root: Path,
     idle_transition_output_root: Path,
@@ -335,6 +351,9 @@ def process(
     report_path: Path,
 ) -> None:
     def state_source(state: str) -> Path:
+        v4 = v4_source_root / f"{state}.png"
+        if v4.exists():
+            return v4
         override = override_source_root / f"{state}.png"
         return override if override.exists() else source_root / f"{state}.png"
 
@@ -358,14 +377,34 @@ def process(
             soften(normalize_color(align_frame(frame), target_median))
             for frame in split_sheet(generated_transition_source(state))
         ]
-        for state in GENERATED_TRANSITION_STATES
+        for state in GENERATED_TRANSITION_STATES - V4_STATES
+    }
+    v4_midpoints = {
+        state: [
+            soften(normalize_color(align_frame(frame), target_median))
+            for frame in split_sheet(v4_midpoint_root / f"{state}.png")
+        ]
+        for state in V4_STATES
+    }
+    v4_quarter_left = {
+        state: [
+            soften(normalize_color(align_frame(frame), target_median))
+            for frame in split_sheet(v4_quarter_left_root / f"{state}.png")
+        ]
+        for state in ("walking", "petting")
+    }
+    v4_quarter_right = {
+        state: [
+            soften(normalize_color(align_frame(frame), target_median))
+            for frame in split_sheet(v4_quarter_right_root / f"{state}.png")
+        ]
+        for state in ("walking", "petting")
     }
 
     report: dict[str, object] = {
         "method": {
-            "generatedTransitions": (
-                "walking, petting and hissing use constrained generated 50% in-between poses"
-            ),
+            "timing": "fixed-rate playback; variable recursive 50% in-between frame density",
+            "generatedTransitions": "walking, petting and hissing use constrained generated 50% poses",
             "otherStates": "50% bidirectional DIS dense optical-flow warp",
             "idleTransitions": "eight generated poses with exact endpoints and reversible playback",
         },
@@ -378,22 +417,50 @@ def process(
 
     for state in STATES:
         state_output = output_root / state
-        transitions: list[np.ndarray] = []
         final_frames: list[np.ndarray] = []
+        midpoint_previews: list[np.ndarray] = []
+        interval_count = 8 if state in LOOPING_STATES else 7
+        insertion_counts = INSERTION_COUNTS.get(state, (1,) * interval_count)
 
         for index, keyframe in enumerate(keyframes[state]):
-            if state in GENERATED_TRANSITION_STATES:
-                transition = generated_transitions[state][index]
-            elif index == 7 and state not in LOOPING_STATES:
-                transition = keyframe.copy()
+            final_frames.append(keyframe)
+            if index >= interval_count:
+                continue
+
+            next_keyframe = keyframes[state][(index + 1) % 8]
+            if state in V4_STATES:
+                midpoint = v4_midpoints[state][index]
+            elif state in GENERATED_TRANSITION_STATES:
+                midpoint = generated_transitions[state][index]
             else:
-                transition = transition_frame(keyframe, keyframes[state][(index + 1) % 8])
-            transitions.append(transition)
-            final_frames.extend((keyframe, transition))
+                midpoint = transition_frame(keyframe, next_keyframe)
+            midpoint_previews.append(midpoint)
+
+            insertions = insertion_counts[index]
+            if insertions == 0:
+                continue
+            if insertions == 1:
+                final_frames.append(midpoint)
+                continue
+            if insertions != 3:
+                raise ValueError(f"unsupported insertion count {insertions} for {state}")
+
+            if state in v4_quarter_left:
+                quarter_left = v4_quarter_left[state][index]
+                quarter_right = v4_quarter_right[state][index]
+            else:
+                # A second 50% pass produces 25% and 75% poses while staying
+                # bounded by the generated midpoint and its exact neighbors.
+                quarter_left = transition_frame(keyframe, midpoint)
+                quarter_right = transition_frame(midpoint, next_keyframe)
+            final_frames.extend((quarter_left, midpoint, quarter_right))
 
         for index, frame in enumerate(final_frames):
             write_frame(state_output / f"{index:02d}.png", frame)
-        write_transition_sheet(work_root / "transition-sheets" / f"{state}.png", transitions)
+        write_transition_sheet(
+            work_root / "transition-sheets" / f"{state}.png",
+            (midpoint_previews + [midpoint_previews[-1]])[:8],
+        )
         write_final_sheet(work_root / "final-sheets" / f"{state}.png", final_frames)
 
         metrics = [frame_metrics(frame, target_median) for frame in final_frames]
@@ -403,8 +470,12 @@ def process(
         widths = [head_width(frame) for frame in final_frames]
         report["states"][state] = {
             "frameCount": len(final_frames),
+            "fixedRatePlayback": True,
+            "insertionCounts": list(insertion_counts),
             "transitionMethod": (
-                "constrained generated 50% in-between poses"
+                "variable recursive constrained 50% in-between poses"
+                if state in V4_STATES
+                else "constrained generated 50% in-between poses"
                 if state in GENERATED_TRANSITION_STATES
                 else "50% bidirectional DIS dense optical-flow warp"
             ),
@@ -418,24 +489,34 @@ def process(
 
     for start, end in IDLE_TRANSITIONS:
         name = f"{start}-{end}"
-        generated = [
-            soften(normalize_color(align_frame(frame), target_median))
-            for frame in split_sheet(idle_transition_source_root / f"{name}.png")
-        ]
-        start_area = subject_pixel_area(keyframes[start][0])
-        end_area = subject_pixel_area(keyframes[end][0])
-        generated = [
-            scale_to_subject_area(
-                frame,
-                start_area + (end_area - start_area) * index / (len(generated) - 1),
-            )
-            for index, frame in enumerate(generated)
-        ]
+        transition_output = idle_transition_output_root / name
+        existing_paths = [transition_output / f"{index:02d}.png" for index in range(8)]
+        if all(path.exists() for path in existing_paths):
+            # Preserve the already approved v3 transition interiors. Only the
+            # endpoint that touches a replaced state sequence should change.
+            generated = [
+                cv2.imread(str(path), cv2.IMREAD_UNCHANGED) for path in existing_paths
+            ]
+            if any(frame is None or frame.shape[2] != 4 for frame in generated):
+                raise ValueError(f"invalid existing transition frames for {name}")
+        else:
+            generated = [
+                soften(normalize_color(align_frame(frame), target_median))
+                for frame in split_sheet(idle_transition_source_root / f"{name}.png")
+            ]
+            start_area = subject_pixel_area(keyframes[start][0])
+            end_area = subject_pixel_area(keyframes[end][0])
+            generated = [
+                scale_to_subject_area(
+                    frame,
+                    start_area + (end_area - start_area) * index / (len(generated) - 1),
+                )
+                for index, frame in enumerate(generated)
+            ]
         # Exact runtime endpoints prevent a residual flash at either side.
         generated[0] = keyframes[start][0].copy()
         generated[-1] = keyframes[end][0].copy()
 
-        transition_output = idle_transition_output_root / name
         for index, frame in enumerate(generated):
             write_frame(transition_output / f"{index:02d}.png", frame)
         write_final_sheet(work_root / "idle-transition-final-sheets" / f"{name}.png", generated)
@@ -485,6 +566,26 @@ def main() -> None:
         default=Path("artifacts/asset-work/v3/idle-transition-sheets"),
     )
     parser.add_argument(
+        "--v4-source-root",
+        type=Path,
+        default=Path("artifacts/asset-work/v4/source-sheets"),
+    )
+    parser.add_argument(
+        "--v4-midpoint-root",
+        type=Path,
+        default=Path("artifacts/asset-work/v4/generated-midpoint-sheets"),
+    )
+    parser.add_argument(
+        "--v4-quarter-left-root",
+        type=Path,
+        default=Path("artifacts/asset-work/v4/generated-quarter-left-sheets"),
+    )
+    parser.add_argument(
+        "--v4-quarter-right-root",
+        type=Path,
+        default=Path("artifacts/asset-work/v4/generated-quarter-right-sheets"),
+    )
+    parser.add_argument(
         "--output-root",
         type=Path,
         default=Path("src/assets/pet"),
@@ -510,6 +611,10 @@ def main() -> None:
         args.override_source_root,
         args.generated_transition_root,
         args.override_generated_transition_root,
+        args.v4_source_root,
+        args.v4_midpoint_root,
+        args.v4_quarter_left_root,
+        args.v4_quarter_right_root,
         args.idle_transition_source_root,
         args.output_root,
         args.idle_transition_output_root,

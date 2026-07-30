@@ -5,7 +5,7 @@
 
 ## 已实现
 
-- 六套真实包浆风格动画，每套严格 16 张 512×512 透明 PNG；
+- 六套真实包浆风格动画；复杂动作使用差异化插帧密度，所有运行帧均为 512×512 透明 PNG；
 - 可测试的集中状态机、随机行为、左右游走与边界反向；
 - 6 logical px / 500 ms 点击拖动判定，抚摸与可调哈气概率；
 - 原生文件拖放、路径去重与 Rust 安全校验，仅调用系统回收站/废纸篓；
@@ -70,15 +70,15 @@ Credential Manager 或 macOS Keychain。聊天历史最多保留 50 条，可关
 业务代码只依赖固定接口：
 
 ```text
-src/assets/pet/<sitting|walking|sleeping|happy|petting|hissing>/00.png ... 15.png
+src/assets/pet/<state>/00.png ...（帧数按状态配置）
 src/assets/pet-transitions/<sitting-walking|sitting-sleeping|walking-sleeping>/00.png ... 07.png
 ```
 
 替换时保持 RGBA PNG、512×512、统一承重点和文件名即可，无需改代码。`walking` 只需朝右，
 向左由程序镜像。三组静息切换动画只保存一个方向，反向切换由播放器倒放。统一身份锚点
-位于 `artifacts/asset-work/v2/`，当前动作源表、静息切换源表、预览和质量报告位于
-`artifacts/asset-work/v3/`。素材处理脚本会保持原比例、统一承重点与毛色，并把关键帧和
-真正的 50% 过渡帧交错输出：
+位于 `artifacts/asset-work/v2/`，当前动作源表、递归 50% 中间表、预览和质量报告位于
+`artifacts/asset-work/v4/`。素材处理脚本会保持原比例、统一承重点与毛色，并按动作区间
+插入 0、1 或 3 张中间帧；播放器不再用单帧停留时长控制速度：
 
 ```bash
 PYTHONPATH=/path/to/opencv-python-headless \
@@ -102,8 +102,9 @@ PYTHONPATH=/path/to/opencv-python-headless \
   Rust 源码已通过 `cargo fmt --check`；Linux 验证容器缺少 C linker 与 GTK/WebKit 系统库，
   因而后端完整编译留给配置齐全的 Windows/macOS CI。
 - 文件投喂只支持普通本地文件，不支持文件夹、网络共享、云占位文件和符号链接。
-- 状态动画由 8 个动作关键帧与 8 个相邻过渡帧组成；三组静息状态之间另有 8 帧切换动画。
-- walking 默认 10 FPS；petting/hissing 使用逐帧时长实现快速前伸、峰值停顿和较慢恢复。
+- 坐姿、睡觉和开心保留 16 帧；walking 为 32 帧，petting 为 17 帧，hissing 为 16 帧；
+  三组静息状态之间另有 8 帧切换动画。
+- walking 固定 16 FPS，petting/hissing 固定 12 FPS；动作快慢完全由 50% 中间帧密度表达。
 - 应用未附带签名证书、自动更新服务或发布凭据。
 
 状态图见 [架构说明](docs/architecture.md)，实机测试请使用

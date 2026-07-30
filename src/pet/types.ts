@@ -10,7 +10,6 @@ export type AnimationConfig = {
   fps: number;
   loop: boolean;
   durationMs?: number;
-  frameDurationsMs?: readonly number[];
 };
 
 export type PetEvent =
@@ -36,21 +35,11 @@ export type PetMachineState = {
 
 export const ANIMATION_CONFIG: Record<VisualState, AnimationConfig> = {
   sitting: { fps: 8, loop: true },
-  walking: { fps: 10, loop: true },
+  walking: { fps: 16, loop: true },
   sleeping: { fps: 6, loop: true },
   happy: { fps: 12, loop: true, durationMs: 2_000 },
-  petting: {
-    fps: 10,
-    loop: false,
-    frameDurationsMs: [
-      100, 45, 45, 40, 40, 40, 60, 120, 180, 160, 130, 100, 100, 90, 120, 120,
-    ],
-  },
-  hissing: {
-    fps: 10,
-    loop: false,
-    frameDurationsMs: [100, 40, 40, 35, 35, 35, 30, 75, 130, 130, 95, 55, 55, 50, 75, 85],
-  },
+  petting: { fps: 12, loop: false },
+  hissing: { fps: 12, loop: false },
 };
 
 export const IDLE_TRANSITION_CONFIG = { fps: 10, loop: false } satisfies AnimationConfig;
@@ -81,10 +70,7 @@ export function resolveIdleTransition(
 
 export function animationFrameDuration(
   config: AnimationConfig,
-  frameIndex: number,
   fpsMultiplier = 1,
 ): number {
-  const fallback = 1_000 / Math.max(1, config.fps);
-  const duration = config.frameDurationsMs?.[frameIndex] ?? fallback;
-  return duration / Math.max(0.1, fpsMultiplier);
+  return 1_000 / Math.max(1, config.fps) / Math.max(0.1, fpsMultiplier);
 }

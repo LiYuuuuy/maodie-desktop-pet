@@ -12,7 +12,7 @@ stateDiagram-v2
     Sitting --> Petting: click
     Sitting --> Hissing: hiss probability
     Sitting --> Happy: trash success
-    Petting --> Sitting: 16 frames complete
+    Petting --> Sitting: 17 frames complete
     Hissing --> Sitting: 16 frames complete
     Happy --> Sitting: 2 seconds
     Sitting --> ChatOpen: right click
