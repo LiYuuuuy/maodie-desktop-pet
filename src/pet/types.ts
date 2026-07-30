@@ -10,6 +10,10 @@ export type AnimationConfig = {
   fps: number;
   loop: boolean;
   durationMs?: number;
+  optionalTail?: {
+    startFrame: number;
+    playProbability: number;
+  };
 };
 
 export type PetEvent =
@@ -34,15 +38,19 @@ export type PetMachineState = {
 };
 
 export const ANIMATION_CONFIG: Record<VisualState, AnimationConfig> = {
-  sitting: { fps: 8, loop: true },
-  walking: { fps: 16, loop: true },
-  sleeping: { fps: 6, loop: true },
-  happy: { fps: 12, loop: true, durationMs: 2_000 },
-  petting: { fps: 12, loop: false },
-  hissing: { fps: 12, loop: false },
+  sitting: {
+    fps: 16,
+    loop: true,
+    optionalTail: { startFrame: 16, playProbability: 0.25 },
+  },
+  walking: { fps: 24, loop: true },
+  sleeping: { fps: 12, loop: true },
+  happy: { fps: 24, loop: true, durationMs: 2_000 },
+  petting: { fps: 24, loop: false },
+  hissing: { fps: 24, loop: false },
 };
 
-export const IDLE_TRANSITION_CONFIG = { fps: 10, loop: false } satisfies AnimationConfig;
+export const IDLE_TRANSITION_CONFIG = { fps: 20, loop: false } satisfies AnimationConfig;
 
 export const IDLE_TRANSITION_PAIRS = [
   ["sitting", "walking"],
@@ -73,4 +81,22 @@ export function animationFrameDuration(
   fpsMultiplier = 1,
 ): number {
   return 1_000 / Math.max(1, config.fps) / Math.max(0.1, fpsMultiplier);
+}
+
+export function nextAnimationFrame(
+  current: number,
+  frameCount: number,
+  config: AnimationConfig,
+  random = Math.random(),
+): number | undefined {
+  const next = current + 1;
+  if (
+    config.optionalTail &&
+    next === config.optionalTail.startFrame &&
+    random >= config.optionalTail.playProbability
+  ) {
+    return 0;
+  }
+  if (next < frameCount) return next;
+  return config.loop ? 0 : undefined;
 }

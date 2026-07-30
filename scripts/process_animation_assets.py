@@ -5,8 +5,10 @@ The source sheets are generated at 1536x1024, so each cell is 384x512.
 This script preserves that aspect ratio, removes the chroma-key background,
 aligns every subject to a shared center/baseline, normalizes fur color against
 the sitting anchor, and inserts a variable number of recursively generated 50%
-poses between keyframes. Runtime playback remains fixed-rate: motion timing is
-encoded entirely by frame density, never by holding individual frames longer.
+poses between keyframes. A final 50% refinement pass then adds one true
+in-between pose between every pair of runtime frames. Runtime playback remains
+fixed-rate: motion timing is encoded entirely by frame density, never by
+holding individual frames longer.
 
 OpenCV is intentionally an asset-authoring dependency only:
 
@@ -35,6 +37,26 @@ INSERTION_COUNTS: dict[str, tuple[int, ...]] = {
     # Fast mouth opening/closing, dense full-hiss hold and neutral settle.
     "hissing": (0, 1, 0, 3, 0, 1, 3),
 }
+SITTING_SEQUENCE_INDICES = (
+    # Calm, open-eye half. The midpoint from 15 -> 0 closes this sub-loop.
+    0,
+    1,
+    2,
+    11,
+    12,
+    13,
+    14,
+    15,
+    # Optional blink half. It begins and ends on the same calm anchor.
+    0,
+    3,
+    4,
+    6,
+    8,
+    10,
+    11,
+    15,
+)
 IDLE_TRANSITIONS = (
     ("sitting", "walking"),
     ("sitting", "sleeping"),
@@ -80,17 +102,17 @@ def keep_primary_subject(frame: np.ndarray) -> np.ndarray:
     return output
 
 
-def split_sheet(path: Path) -> list[np.ndarray]:
+def split_grid_sheet(path: Path, columns: int, rows: int) -> list[np.ndarray]:
     sheet = cv2.imread(str(path), cv2.IMREAD_COLOR)
     if sheet is None:
         raise ValueError(f"unable to read {path}")
 
     height, width = sheet.shape[:2]
     frames: list[np.ndarray] = []
-    for index in range(8):
-        column, row = index % 4, index // 4
-        left, right = round(column * width / 4), round((column + 1) * width / 4)
-        top, bottom = round(row * height / 2), round((row + 1) * height / 2)
+    for index in range(columns * rows):
+        column, row = index % columns, index // columns
+        left, right = round(column * width / columns), round((column + 1) * width / columns)
+        top, bottom = round(row * height / rows), round((row + 1) * height / rows)
         cell = keep_primary_subject(chroma_to_bgra(sheet[top:bottom, left:right]))
 
         scale = min(CANVAS_SIZE / cell.shape[1], CANVAS_SIZE / cell.shape[0], 1.0)
@@ -107,6 +129,10 @@ def split_sheet(path: Path) -> list[np.ndarray]:
         canvas[y : y + cell.shape[0], x : x + cell.shape[1]] = cell
         frames.append(canvas)
     return frames
+
+
+def split_sheet(path: Path) -> list[np.ndarray]:
+    return split_grid_sheet(path, 4, 2)
 
 
 def alpha_bounds(frame: np.ndarray, threshold: int = 20) -> tuple[int, int, int, int]:
@@ -160,6 +186,35 @@ def scale_to_subject_area(frame: np.ndarray, target_area: float) -> np.ndarray:
     x = TARGET_CENTER_X - width // 2
     y = TARGET_BASELINE_Y - height + 1
 
+    source_left, source_top = max(0, -x), max(0, -y)
+    source_right = min(width, CANVAS_SIZE - x)
+    source_bottom = min(height, CANVAS_SIZE - y)
+    target_left, target_top = max(0, x), max(0, y)
+    target_right = target_left + max(0, source_right - source_left)
+    target_bottom = target_top + max(0, source_bottom - source_top)
+    canvas[target_top:target_bottom, target_left:target_right] = resized[
+        source_top:source_bottom, source_left:source_right
+    ]
+    return align_frame(canvas)
+
+
+def scale_uniform(frame: np.ndarray, scale: float) -> np.ndarray:
+    if abs(scale - 1) < 0.005:
+        return align_frame(frame)
+    left, top, right, bottom = alpha_bounds(frame)
+    crop = frame[top : bottom + 1, left : right + 1]
+    resized = cv2.resize(
+        crop,
+        (
+            max(1, round(crop.shape[1] * scale)),
+            max(1, round(crop.shape[0] * scale)),
+        ),
+        interpolation=cv2.INTER_CUBIC if scale > 1 else cv2.INTER_AREA,
+    )
+    canvas = np.zeros_like(frame)
+    height, width = resized.shape[:2]
+    x = TARGET_CENTER_X - width // 2
+    y = TARGET_BASELINE_Y - height + 1
     source_left, source_top = max(0, -x), max(0, -y)
     source_right = min(width, CANVAS_SIZE - x)
     source_bottom = min(height, CANVAS_SIZE - y)
@@ -261,20 +316,32 @@ def transition_frame(first: np.ndarray, second: np.ndarray) -> np.ndarray:
     second_warped = warp_halfway(second, backward)
     mixed = (first_warped + second_warped) * 0.5
 
-    alpha = np.clip(mixed[:, :, 3:4], 0, 255)
+    mixed_alpha = np.clip(mixed[:, :, 3:4], 0, 255)
     rgb = np.divide(
         mixed[:, :, :3] * 255,
-        np.maximum(alpha, 1),
+        np.maximum(mixed_alpha, 1),
         out=np.zeros_like(mixed[:, :, :3]),
-        where=alpha > 0,
+        where=mixed_alpha > 0,
     )
-    return np.concatenate((np.clip(rgb, 0, 255), alpha), axis=2).astype(np.uint8)
+    # A moving limb may be covered by only one of the two half-warps. Averaging
+    # their alpha would make that valid in-between pose 50% transparent and
+    # reveal the chroma background as a green "ghost". Restore full coverage
+    # for one-sided motion while retaining antialiased outer edges.
+    output_alpha = np.clip(mixed_alpha * 2, 0, 255)
+    return np.concatenate((np.clip(rgb, 0, 255), output_alpha), axis=2).astype(np.uint8)
 
 
 def write_frame(path: Path, frame: np.ndarray) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     if not cv2.imwrite(str(path), frame):
         raise ValueError(f"unable to write {path}")
+
+
+def clear_frames(directory: Path) -> None:
+    if not directory.exists():
+        return
+    for path in directory.glob("*.png"):
+        path.unlink()
 
 
 def composite_on_green(frame: np.ndarray) -> np.ndarray:
@@ -344,6 +411,7 @@ def process(
     v4_midpoint_root: Path,
     v4_quarter_left_root: Path,
     v4_quarter_right_root: Path,
+    v5_walking_midpoint_sheet: Path,
     idle_transition_source_root: Path,
     output_root: Path,
     idle_transition_output_root: Path,
@@ -400,13 +468,18 @@ def process(
         ]
         for state in ("walking", "petting")
     }
+    v5_walking_midpoints = [
+        soften(normalize_color(align_frame(frame), target_median))
+        for frame in split_grid_sheet(v5_walking_midpoint_sheet, 8, 4)
+    ]
 
     report: dict[str, object] = {
         "method": {
-            "timing": "fixed-rate playback; variable recursive 50% in-between frame density",
+            "timing": "fixed-rate playback; one final 50% refinement between every runtime pair",
             "generatedTransitions": "walking, petting and hissing use constrained generated 50% poses",
             "otherStates": "50% bidirectional DIS dense optical-flow warp",
-            "idleTransitions": "eight generated poses with exact endpoints and reversible playback",
+            "idleTransitions": "fifteen poses with exact endpoints and reversible playback",
+            "sittingPlayback": "calm half-loop with a 25% chance to continue into the blink half",
         },
         "targetCenterX": TARGET_CENTER_X,
         "targetBaselineY": TARGET_BASELINE_Y,
@@ -455,6 +528,63 @@ def process(
                 quarter_right = transition_frame(midpoint, next_keyframe)
             final_frames.extend((quarter_left, midpoint, quarter_right))
 
+        if state == "sitting":
+            final_frames = [final_frames[index] for index in SITTING_SEQUENCE_INDICES]
+
+        interaction_scale = 1.0
+        if state in {"petting", "hissing"}:
+            interaction_scale = np.sqrt(
+                subject_pixel_area(keyframes["sitting"][0])
+                / max(1, subject_pixel_area(final_frames[0]))
+            )
+            final_frames = [
+                align_frame(soften(scale_uniform(frame, interaction_scale)))
+                for frame in final_frames
+            ]
+            # Interaction entry and recovery use the exact sitting anchor. This
+            # eliminates the one-frame size pop in either direction.
+            final_frames[0] = keyframes["sitting"][0].copy()
+            final_frames[-1] = keyframes["sitting"][0].copy()
+
+        source_frame_count = len(final_frames)
+        refined_frames: list[np.ndarray] = []
+        refinement_intervals = (
+            source_frame_count if state in LOOPING_STATES else source_frame_count - 1
+        )
+        for index, frame in enumerate(final_frames):
+            refined_frames.append(frame)
+            if index >= refinement_intervals:
+                continue
+            next_frame = final_frames[(index + 1) % source_frame_count]
+            if state == "walking":
+                midpoint = v5_walking_midpoints[index]
+                target_area = (
+                    subject_pixel_area(frame) + subject_pixel_area(next_frame)
+                ) / 2
+                midpoint_scale = np.sqrt(
+                    target_area / max(1, subject_pixel_area(midpoint))
+                )
+                midpoint = align_frame(
+                    soften(
+                        normalize_color(
+                            scale_uniform(midpoint, midpoint_scale),
+                            target_median,
+                        )
+                    )
+                )
+            else:
+                midpoint = align_frame(
+                    soften(
+                        normalize_color(
+                            align_frame(transition_frame(frame, next_frame)),
+                            target_median,
+                        )
+                    )
+                )
+            refined_frames.append(midpoint)
+        final_frames = refined_frames
+
+        clear_frames(state_output)
         for index, frame in enumerate(final_frames):
             write_frame(state_output / f"{index:02d}.png", frame)
         write_transition_sheet(
@@ -469,11 +599,16 @@ def process(
         colors = [float(item["furColorDistance"]) for item in metrics]
         widths = [head_width(frame) for frame in final_frames]
         report["states"][state] = {
+            "sourceFrameCount": source_frame_count,
             "frameCount": len(final_frames),
             "fixedRatePlayback": True,
+            "finalRefinement": "one 50% in-between pose per adjacent runtime pair",
             "insertionCounts": list(insertion_counts),
+            "interactionScale": round(float(interaction_scale), 4),
             "transitionMethod": (
-                "variable recursive constrained 50% in-between poses"
+                "AI-generated 50% walking poses with per-pair area and baseline constraints"
+                if state == "walking"
+                else "variable recursive constrained 50% in-between poses"
                 if state in V4_STATES
                 else "constrained generated 50% in-between poses"
                 if state in GENERATED_TRANSITION_STATES
@@ -517,6 +652,23 @@ def process(
         generated[0] = keyframes[start][0].copy()
         generated[-1] = keyframes[end][0].copy()
 
+        refined_transition: list[np.ndarray] = []
+        for index, frame in enumerate(generated):
+            refined_transition.append(frame)
+            if index + 1 < len(generated):
+                refined_transition.append(
+                    align_frame(
+                        soften(
+                            normalize_color(
+                                align_frame(transition_frame(frame, generated[index + 1])),
+                                target_median,
+                            )
+                        )
+                    )
+                )
+        generated = refined_transition
+
+        clear_frames(transition_output)
         for index, frame in enumerate(generated):
             write_frame(transition_output / f"{index:02d}.png", frame)
         write_final_sheet(work_root / "idle-transition-final-sheets" / f"{name}.png", generated)
@@ -586,6 +738,11 @@ def main() -> None:
         default=Path("artifacts/asset-work/v4/generated-quarter-right-sheets"),
     )
     parser.add_argument(
+        "--v5-walking-midpoint-sheet",
+        type=Path,
+        default=Path("artifacts/asset-work/v5/ai-generated-midpoint-sheets/walking.png"),
+    )
+    parser.add_argument(
         "--output-root",
         type=Path,
         default=Path("src/assets/pet"),
@@ -598,12 +755,12 @@ def main() -> None:
     parser.add_argument(
         "--work-root",
         type=Path,
-        default=Path("artifacts/asset-work/v3"),
+        default=Path("artifacts/asset-work/v5"),
     )
     parser.add_argument(
         "--report",
         type=Path,
-        default=Path("artifacts/asset-work/v3/quality-report.json"),
+        default=Path("artifacts/asset-work/v5/quality-report.json"),
     )
     args = parser.parse_args()
     process(
@@ -615,6 +772,7 @@ def main() -> None:
         args.v4_midpoint_root,
         args.v4_quarter_left_root,
         args.v4_quarter_right_root,
+        args.v5_walking_midpoint_sheet,
         args.idle_transition_source_root,
         args.output_root,
         args.idle_transition_output_root,

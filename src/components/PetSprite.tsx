@@ -3,6 +3,7 @@ import {
   ANIMATION_CONFIG,
   IDLE_TRANSITION_CONFIG,
   animationFrameDuration,
+  nextAnimationFrame,
   resolveIdleTransition,
   type AnimationConfig,
   type IdleTransitionName,
@@ -94,8 +95,8 @@ export function PetSprite({ state, direction, fpsMultiplier = 1, onComplete }: P
     let frameTimer: number | undefined;
     const scheduleNext = () => {
       frameTimer = window.setTimeout(() => {
-        const next = current + 1;
-        if (next < playback.frames.length) {
+        const next = nextAnimationFrame(current, playback.frames.length, playback.config);
+        if (next !== undefined) {
           current = next;
           setFrame(current);
           scheduleNext();
@@ -103,12 +104,6 @@ export function PetSprite({ state, direction, fpsMultiplier = 1, onComplete }: P
         }
         if (playback.nextState) {
           setPlayback(statePlayback(playback.nextState));
-          return;
-        }
-        if (playback.config.loop) {
-          current = 0;
-          setFrame(current);
-          scheduleNext();
           return;
         }
         if (playback.completionState) {

@@ -4,17 +4,18 @@ import {
   ANIMATION_CONFIG,
   IDLE_TRANSITION_PAIRS,
   VISUAL_STATES,
+  nextAnimationFrame,
   resolveIdleTransition,
 } from "../src/pet/types";
 
 describe("animation asset contract", () => {
   const expectedFrameCounts = {
-    sitting: 16,
-    walking: 32,
-    sleeping: 16,
-    happy: 16,
-    petting: 17,
-    hissing: 16,
+    sitting: 32,
+    walking: 64,
+    sleeping: 32,
+    happy: 32,
+    petting: 33,
+    hissing: 31,
   } as const;
 
   it.each(VISUAL_STATES)("%s contains the intended 512px RGBA frame sequence", (state) => {
@@ -37,25 +38,25 @@ describe("animation asset contract", () => {
 
   it("uses one fixed interval within each sequence", () => {
     expect(Object.fromEntries(VISUAL_STATES.map((state) => [state, ANIMATION_CONFIG[state].fps]))).toEqual({
-      sitting: 8,
-      walking: 16,
-      sleeping: 6,
-      happy: 12,
-      petting: 12,
-      hissing: 12,
+      sitting: 16,
+      walking: 24,
+      sleeping: 12,
+      happy: 24,
+      petting: 24,
+      hissing: 24,
     });
     for (const state of VISUAL_STATES) {
       expect(ANIMATION_CONFIG[state]).not.toHaveProperty("frameDurationsMs");
     }
   });
 
-  it("contains one reversible eight-frame clip for every idle-state pair", () => {
+  it("contains one reversible fifteen-frame clip for every idle-state pair", () => {
     for (const [start, end] of IDLE_TRANSITION_PAIRS) {
       const name = `${start}-${end}`;
       const directory = resolve("src/assets/pet-transitions", name);
       const names = readdirSync(directory).filter((file) => file.endsWith(".png")).sort();
       expect(names).toEqual(
-        Array.from({ length: 8 }, (_, index) => `${index.toString().padStart(2, "0")}.png`),
+        Array.from({ length: 15 }, (_, index) => `${index.toString().padStart(2, "0")}.png`),
       );
       expect(resolveIdleTransition(start, end)).toEqual({ name, reverse: false });
       expect(resolveIdleTransition(end, start)).toEqual({ name, reverse: true });
@@ -64,7 +65,7 @@ describe("animation asset contract", () => {
 
   it("encodes reaction timing with different in-between counts", () => {
     const report = JSON.parse(
-      readFileSync(resolve("artifacts/asset-work/v4/quality-report.json"), "utf8"),
+      readFileSync(resolve("artifacts/asset-work/v5/quality-report.json"), "utf8"),
     ) as {
       states: Record<
         string,
@@ -98,7 +99,7 @@ describe("animation asset contract", () => {
 
   it("keeps the generated subject anchored, color-matched, and subtly scaled", () => {
     const report = JSON.parse(
-      readFileSync(resolve("artifacts/asset-work/v4/quality-report.json"), "utf8"),
+      readFileSync(resolve("artifacts/asset-work/v5/quality-report.json"), "utf8"),
     ) as {
       states: Record<
         string,
@@ -134,11 +135,27 @@ describe("animation asset contract", () => {
     expect(report.states.petting.maxHeadWidthGrowthRatio).toBeLessThanOrEqual(1.08);
     expect(report.states.hissing.maxHeadWidthGrowthRatio).toBeLessThanOrEqual(1.08);
 
+    const sittingAnchor = readFileSync(resolve("src/assets/pet/sitting/00.png"));
+    for (const state of ["petting", "hissing"] as const) {
+      const directory = resolve("src/assets/pet", state);
+      const names = readdirSync(directory).filter((name) => name.endsWith(".png")).sort();
+      expect(readFileSync(resolve(directory, names[0]))).toEqual(sittingAnchor);
+      expect(readFileSync(resolve(directory, names.at(-1)!))).toEqual(sittingAnchor);
+    }
+
     for (const transition of Object.values(report.idleTransitions)) {
-      expect(transition.frameCount).toBe(8);
+      expect(transition.frameCount).toBe(15);
       expect(transition.maxCenterDriftPx).toBeLessThanOrEqual(2);
       expect(transition.maxBaselineDriftPx).toBeLessThanOrEqual(1);
       expect(transition.maxFurColorDistance).toBeLessThanOrEqual(4);
     }
+  });
+
+  it("loops the calm sitting half and only sometimes enters the blink tail", () => {
+    const config = ANIMATION_CONFIG.sitting;
+    expect(config.optionalTail).toEqual({ startFrame: 16, playProbability: 0.25 });
+    expect(nextAnimationFrame(15, 32, config, 0.24)).toBe(16);
+    expect(nextAnimationFrame(15, 32, config, 0.25)).toBe(0);
+    expect(nextAnimationFrame(31, 32, config, 0)).toBe(0);
   });
 });
