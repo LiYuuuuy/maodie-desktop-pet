@@ -1,5 +1,22 @@
-import { LogicalPosition, availableMonitors, getCurrentWindow } from "@tauri-apps/api/window";
+import { PhysicalPosition, availableMonitors, getCurrentWindow } from "@tauri-apps/api/window";
 import type { AppSettings } from "../settings/schema";
+
+export function advanceWalkingPosition(
+  currentX: number,
+  direction: "left" | "right",
+  distance: number,
+  minX: number,
+  maxX: number,
+): { x: number; direction: "left" | "right" } {
+  const safeMaxX = Math.max(minX, maxX);
+  let nextDirection = direction;
+  let x = currentX + (direction === "right" ? distance : -distance);
+  if (x <= minX || x >= safeMaxX) {
+    nextDirection = direction === "right" ? "left" : "right";
+    x = Math.min(safeMaxX, Math.max(minX, x));
+  }
+  return { x, direction: nextDirection };
+}
 
 export function startWalking(
   direction: "left" | "right",
@@ -12,6 +29,7 @@ export function startWalking(
     settings.movement.minSpeed +
     Math.random() * Math.max(0, settings.movement.maxSpeed - settings.movement.minSpeed);
   let last = performance.now();
+  let targetX: number | undefined;
   const appWindow = getCurrentWindow();
 
   const tick = async (now: number) => {
@@ -19,8 +37,9 @@ export function startWalking(
     const elapsed = Math.min(0.1, (now - last) / 1_000);
     last = now;
     try {
-      const [position, scaleFactor, monitors] = await Promise.all([
+      const [position, windowSize, scaleFactor, monitors] = await Promise.all([
         appWindow.outerPosition(),
+        appWindow.outerSize(),
         appWindow.scaleFactor(),
         availableMonitors(),
       ]);
@@ -36,17 +55,27 @@ export function startWalking(
           );
         }) ?? monitors[0];
       if (monitor) {
-        const minX = monitor.workArea.position.x / scaleFactor;
+        const minX = monitor.workArea.position.x;
         const maxX =
-          (monitor.workArea.position.x + monitor.workArea.size.width) / scaleFactor -
-          256 * settings.pet.scale;
-        let x = position.x / scaleFactor + (currentDirection === "right" ? 1 : -1) * speed * elapsed;
-        if (x <= minX || x >= maxX) {
-          currentDirection = currentDirection === "right" ? "left" : "right";
-          onDirection(currentDirection);
-          x = Math.min(maxX, Math.max(minX, x));
+          monitor.workArea.position.x + monitor.workArea.size.width - windowSize.width;
+        if (targetX === undefined || Math.abs(targetX - position.x) > 3 * scaleFactor) {
+          targetX = position.x;
         }
-        await appWindow.setPosition(new LogicalPosition(x, position.y / scaleFactor));
+        const next = advanceWalkingPosition(
+          targetX,
+          currentDirection,
+          speed * scaleFactor * elapsed,
+          minX,
+          maxX,
+        );
+        targetX = next.x;
+        if (next.direction !== currentDirection) {
+          currentDirection = next.direction;
+          onDirection(currentDirection);
+        }
+        await appWindow.setPosition(
+          new PhysicalPosition(Math.round(targetX), position.y),
+        );
       }
     } catch {
       // Browser preview and transient monitor changes simply pause one frame.

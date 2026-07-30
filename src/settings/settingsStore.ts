@@ -14,6 +14,7 @@ function appStore(): Promise<Store> {
 export async function loadSettings(): Promise<AppSettings> {
   try {
     const store = await appStore();
+    await store.reload();
     return migrateSettings(await store.get(SETTINGS_KEY));
   } catch {
     const local = localStorage.getItem(SETTINGS_KEY);

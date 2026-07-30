@@ -1,0 +1,2839 @@
+{
+  "name": "maodie-walking-video-driven-dense-v2",
+  "schemaVersion": 3,
+  "frameCount": 25,
+  "loop": true,
+  "direction": "right",
+  "drivingReference": {
+    "type": "real_cat_side_view_video",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Whole-Body-Mechanics-of-Stealthy-Walking-in-Cats-pone.0003808.s002.ogv",
+    "sourcePaper": "https://doi.org/10.1371/journal.pone.0003808",
+    "license": "CC BY 2.5",
+    "sourcePlaybackStartSeconds": 2.9,
+    "sourcePlaybackEndSeconds": 7.24,
+    "sourcePlaybackFps": 29.97,
+    "captureFps": 125,
+    "naturalCycleSeconds": 1.0406,
+    "notes": "One complete extended-walk stride, horizontally stabilized and sampled at 25 exact timestamps; the duplicated 100% endpoint is omitted."
+  },
+  "canvas": {
+    "width": 512,
+    "height": 512,
+    "groundY": 436
+  },
+  "playback": {
+    "fps": 24.0246,
+    "cycleSeconds": 1.0406,
+    "frameIntervalSeconds": 0.0416,
+    "timingPolicy": "25 equal phase samples across the same natural gait duration; higher frame count must not shorten or speed up the stride"
+  },
+  "limbs": {
+    "LF": {
+      "identity": "left_front_near",
+      "debugColor": "#ef4444",
+      "occlusion": "near-side; rendered in front of torso"
+    },
+    "RF": {
+      "identity": "right_front_far",
+      "debugColor": "#3b82f6",
+      "occlusion": "far-side; upper segment remains behind torso"
+    },
+    "LH": {
+      "identity": "left_hind_near",
+      "debugColor": "#22c55e",
+      "occlusion": "near-side; rendered in front of torso"
+    },
+    "RH": {
+      "identity": "right_hind_far",
+      "debugColor": "#eab308",
+      "occlusion": "far-side; upper segment remains behind torso"
+    }
+  },
+  "bodyMotion": {
+    "required": [
+      "center_of_mass_bob",
+      "changing_back_line",
+      "alternating_shoulder_and_hip_advance",
+      "subtle_head_follow",
+      "tail_balance"
+    ],
+    "rootMotion": "World translation is handled by the desktop app. The sprite retains only within-stride weight transfer.",
+    "bodyMustNotBeLocked": true,
+    "scale": "stable",
+    "maximumLocalCenterShiftPx": 7,
+    "maximumLocalVerticalBobPx": 8
+  },
+  "renderOrder": [
+    "RF",
+    "RH",
+    "body",
+    "LF",
+    "LH"
+  ],
+  "frames": [
+    {
+      "index": 1,
+      "phase": "dense_video_phase_01",
+      "sourceSeconds": 2.9,
+      "phaseFraction": 0.0,
+      "support": [
+        "LF",
+        "LH",
+        "RH"
+      ],
+      "occlusionOrder": [
+        "RF",
+        "RH",
+        "body",
+        "LF",
+        "LH"
+      ],
+      "body": {
+        "center": [
+          250,
+          300
+        ],
+        "shoulder": [
+          326,
+          298
+        ],
+        "hip": [
+          178,
+          305
+        ],
+        "head": [
+          382,
+          272
+        ],
+        "tailTip": [
+          105,
+          202
+        ],
+        "headAngleDegrees": 0.5,
+        "backArchPx": 0
+      },
+      "LF": {
+        "state": "mid_stance",
+        "joints": [
+          [
+            329,
+            313
+          ],
+          [
+            337,
+            370
+          ],
+          [
+            347,
+            436
+          ]
+        ]
+      },
+      "RF": {
+        "state": "lift",
+        "joints": [
+          [
+            312,
+            317
+          ],
+          [
+            340,
+            358
+          ],
+          [
+            370,
+            408
+          ]
+        ]
+      },
+      "LH": {
+        "state": "late_stance",
+        "joints": [
+          [
+            178,
+            319
+          ],
+          [
+            164,
+            375
+          ],
+          [
+            148,
+            436
+          ]
+        ]
+      },
+      "RH": {
+        "state": "mid_stance",
+        "joints": [
+          [
+            198,
+            322
+          ],
+          [
+            205,
+            378
+          ],
+          [
+            213,
+            436
+          ]
+        ]
+      }
+    },
+    {
+      "index": 2,
+      "phase": "dense_video_phase_02",
+      "sourceSeconds": 3.0736,
+      "phaseFraction": 0.04,
+      "support": [
+        "LF",
+        "LH",
+        "RH"
+      ],
+      "occlusionOrder": [
+        "RF",
+        "RH",
+        "body",
+        "LF",
+        "LH"
+      ],
+      "body": {
+        "center": [
+          250,
+          299
+        ],
+        "shoulder": [
+          327,
+          297
+        ],
+        "hip": [
+          178,
+          305
+        ],
+        "head": [
+          383,
+          271
+        ],
+        "tailTip": [
+          106,
+          201
+        ],
+        "headAngleDegrees": 0.39,
+        "backArchPx": 0
+      },
+      "LF": {
+        "state": "mid_stance_transition",
+        "joints": [
+          [
+            330,
+            312
+          ],
+          [
+            335,
+            370
+          ],
+          [
+            343,
+            436
+          ]
+        ]
+      },
+      "RF": {
+        "state": "lift_transition",
+        "joints": [
+          [
+            313,
+            316
+          ],
+          [
+            345,
+            355
+          ],
+          [
+            380,
+            409
+          ]
+        ]
+      },
+      "LH": {
+        "state": "late_stance_transition",
+        "joints": [
+          [
+            178,
+            319
+          ],
+          [
+            161,
+            375
+          ],
+          [
+            142,
+            436
+          ]
+        ]
+      },
+      "RH": {
+        "state": "mid_stance_transition",
+        "joints": [
+          [
+            198,
+            322
+          ],
+          [
+            204,
+            378
+          ],
+          [
+            210,
+            436
+          ]
+        ]
+      }
+    },
+    {
+      "index": 3,
+      "phase": "dense_video_phase_03",
+      "sourceSeconds": 3.2472,
+      "phaseFraction": 0.08,
+      "support": [
+        "LF",
+        "LH",
+        "RH"
+      ],
+      "occlusionOrder": [
+        "RF",
+        "RH",
+        "body",
+        "LF",
+        "LH"
+      ],
+      "body": {
+        "center": [
+          251,
+          299
+        ],
+        "shoulder": [
+          327,
+          296
+        ],
+        "hip": [
+          179,
+          304
+        ],
+        "head": [
+          384,
+          270
+        ],
+        "tailTip": [
+          107,
+          198
+        ],
+        "headAngleDegrees": 0.24,
+        "backArchPx": -1
+      },
+      "LF": {
+        "state": "late_stance_transition",
+        "joints": [
+          [
+            330,
+            311
+          ],
+          [
+            335,
+            369
+          ],
+          [
+            342,
+            436
+          ]
+        ]
+      },
+      "RF": {
+        "state": "reach_transition",
+        "joints": [
+          [
+            313,
+            315
+          ],
+          [
+            350,
+            352
+          ],
+          [
+            389,
+            411
+          ]
+        ]
+      },
+      "LH": {
+        "state": "late_stance_transition",
+        "joints": [
+          [
+            179,
+            318
+          ],
+          [
+            159,
+            374
+          ],
+          [
+            140,
+            436
+          ]
+        ]
+      },
+      "RH": {
+        "state": "mid_stance_transition",
+        "joints": [
+          [
+            199,
+            321
+          ],
+          [
+            204,
+            378
+          ],
+          [
+            208,
+            436
+          ]
+        ]
+      }
+    },
+    {
+      "index": 4,
+      "phase": "dense_video_phase_04",
+      "sourceSeconds": 3.4208,
+      "phaseFraction": 0.12,
+      "support": [
+        "LF",
+        "LH",
+        "RH"
+      ],
+      "occlusionOrder": [
+        "RF",
+        "RH",
+        "body",
+        "LF",
+        "LH"
+      ],
+      "body": {
+        "center": [
+          251,
+          298
+        ],
+        "shoulder": [
+          328,
+          295
+        ],
+        "hip": [
+          179,
+          304
+        ],
+        "head": [
+          385,
+          269
+        ],
+        "tailTip": [
+          108,
+          196
+        ],
+        "headAngleDegrees": 0.03,
+        "backArchPx": -1
+      },
+      "LF": {
+        "state": "late_stance_transition",
+        "joints": [
+          [
+            331,
+            310
+          ],
+          [
+            335,
+            369
+          ],
+          [
+            340,
+            436
+          ]
+        ]
+      },
+      "RF": {
+        "state": "reach_transition",
+        "joints": [
+          [
+            314,
+            314
+          ],
+          [
+            354,
+            351
+          ],
+          [
+            395,
+            415
+          ]
+        ]
+      },
+      "LH": {
+        "state": "late_stance_transition",
+        "joints": [
+          [
+            179,
+            318
+          ],
+          [
+            158,
+            374
+          ],
+          [
+            138,
+            436
+          ]
+        ]
+      },
+      "RH": {
+        "state": "mid_stance_transition",
+        "joints": [
+          [
+            199,
+            321
+          ],
+          [
+            204,
+            378
+          ],
+          [
+            207,
+            436
+          ]
+        ]
+      }
+    },
+    {
+      "index": 5,
+      "phase": "dense_video_phase_05",
+      "sourceSeconds": 3.5944,
+      "phaseFraction": 0.16,
+      "support": [
+        "LF",
+        "LH",
+        "RH"
+      ],
+      "occlusionOrder": [
+        "RF",
+        "RH",
+        "body",
+        "LF",
+        "LH"
+      ],
+      "body": {
+        "center": [
+          251,
+          298
+        ],
+        "shoulder": [
+          329,
+          295
+        ],
+        "hip": [
+          180,
+          304
+        ],
+        "head": [
+          386,
+          269
+        ],
+        "tailTip": [
+          109,
+          194
+        ],
+        "headAngleDegrees": -0.26,
+        "backArchPx": -1
+      },
+      "LF": {
+        "state": "late_stance_transition",
+        "joints": [
+          [
+            332,
+            310
+          ],
+          [
+            335,
+            369
+          ],
+          [
+            338,
+            436
+          ]
+        ]
+      },
+      "RF": {
+        "state": "reach_transition",
+        "joints": [
+          [
+            315,
+            314
+          ],
+          [
+            356,
+            353
+          ],
+          [
+            397,
+            421
+          ]
+        ]
+      },
+      "LH": {
+        "state": "late_stance_transition",
+        "joints": [
+          [
+            180,
+            318
+          ],
+          [
+            155,
+            374
+          ],
+          [
+            135,
+            437
+          ]
+        ]
+      },
+      "RH": {
+        "state": "mid_stance_transition",
+        "joints": [
+          [
+            200,
+            321
+          ],
+          [
+            204,
+            378
+          ],
+          [
+            206,
+            436
+          ]
+        ]
+      }
+    },
+    {
+      "index": 6,
+      "phase": "dense_video_phase_06",
+      "sourceSeconds": 3.768,
+      "phaseFraction": 0.2,
+      "support": [
+        "LF",
+        "LH",
+        "RH"
+      ],
+      "occlusionOrder": [
+        "RF",
+        "RH",
+        "body",
+        "LF",
+        "LH"
+      ],
+      "body": {
+        "center": [
+          252,
+          298
+        ],
+        "shoulder": [
+          330,
+          296
+        ],
+        "hip": [
+          180,
+          303
+        ],
+        "head": [
+          387,
+          269
+        ],
+        "tailTip": [
+          110,
+          192
+        ],
+        "headAngleDegrees": -0.61,
+        "backArchPx": -1
+      },
+      "LF": {
+        "state": "late_stance_transition",
+        "joints": [
+          [
+            333,
+            311
+          ],
+          [
+            334,
+            370
+          ],
+          [
+            335,
+            436
+          ]
+        ]
+      },
+      "RF": {
+        "state": "contact_transition",
+        "joints": [
+          [
+            316,
+            315
+          ],
+          [
+            357,
+            356
+          ],
+          [
+            396,
+            429
+          ]
+        ]
+      },
+      "LH": {
+        "state": "toe_off_transition",
+        "joints": [
+          [
+            180,
+            317
+          ],
+          [
+            152,
+            374
+          ],
+          [
+            130,
+            438
+          ]
+        ]
+      },
+      "RH": {
+        "state": "late_stance_transition",
+        "joints": [
+          [
+            200,
+            320
+          ],
+          [
+            203,
+            378
+          ],
+          [
+            204,
+            436
+          ]
+        ]
+      }
+    },
+    {
+      "index": 7,
+      "phase": "dense_video_phase_07",
+      "sourceSeconds": 3.9416,
+      "phaseFraction": 0.24,
+      "support": [
+        "LF",
+        "RF",
+        "LH",
+        "RH"
+      ],
+      "occlusionOrder": [
+        "RF",
+        "RH",
+        "body",
+        "LF",
+        "LH"
+      ],
+      "body": {
+        "center": [
+          252,
+          299
+        ],
+        "shoulder": [
+          331,
+          297
+        ],
+        "hip": [
+          181,
+          303
+        ],
+        "head": [
+          388,
+          270
+        ],
+        "tailTip": [
+          112,
+          190
+        ],
+        "headAngleDegrees": -0.94,
+        "backArchPx": 0
+      },
+      "LF": {
+        "state": "late_stance_transition",
+        "joints": [
+          [
+            334,
+            312
+          ],
+          [
+            334,
+            371
+          ],
+          [
+            332,
+            436
+          ]
+        ]
+      },
+      "RF": {
+        "state": "contact_transition",
+        "joints": [
+          [
+            317,
+            316
+          ],
+          [
+            358,
+            360
+          ],
+          [
+            394,
+            435
+          ]
+        ]
+      },
+      "LH": {
+        "state": "toe_off_transition",
+        "joints": [
+          [
+            181,
+            317
+          ],
+          [
+            153,
+            374
+          ],
+          [
+            131,
+            437
+          ]
+        ]
+      },
+      "RH": {
+        "state": "late_stance_transition",
+        "joints": [
+          [
+            201,
+            320
+          ],
+          [
+            202,
+            378
+          ],
+          [
+            202,
+            436
+          ]
+        ]
+      }
+    },
+    {
+      "index": 8,
+      "phase": "dense_video_phase_08",
+      "sourceSeconds": 4.1152,
+      "phaseFraction": 0.28,
+      "support": [
+        "LF",
+        "RF",
+        "RH"
+      ],
+      "occlusionOrder": [
+        "RF",
+        "RH",
+        "body",
+        "LF",
+        "LH"
+      ],
+      "body": {
+        "center": [
+          252,
+          300
+        ],
+        "shoulder": [
+          332,
+          298
+        ],
+        "hip": [
+          181,
+          304
+        ],
+        "head": [
+          388,
+          271
+        ],
+        "tailTip": [
+          113,
+          189
+        ],
+        "headAngleDegrees": -1.19,
+        "backArchPx": 0
+      },
+      "LF": {
+        "state": "late_stance_transition",
+        "joints": [
+          [
+            335,
+            313
+          ],
+          [
+            333,
+            372
+          ],
+          [
+            329,
+            436
+          ]
+        ]
+      },
+      "RF": {
+        "state": "contact_transition",
+        "joints": [
+          [
+            318,
+            317
+          ],
+          [
+            358,
+            363
+          ],
+          [
+            391,
+            437
+          ]
+        ]
+      },
+      "LH": {
+        "state": "toe_off_transition",
+        "joints": [
+          [
+            181,
+            318
+          ],
+          [
+            161,
+            372
+          ],
+          [
+            140,
+            430
+          ]
+        ]
+      },
+      "RH": {
+        "state": "late_stance_transition",
+        "joints": [
+          [
+            201,
+            321
+          ],
+          [
+            201,
+            378
+          ],
+          [
+            200,
+            436
+          ]
+        ]
+      }
+    },
+    {
+      "index": 9,
+      "phase": "dense_video_phase_09",
+      "sourceSeconds": 4.2888,
+      "phaseFraction": 0.32,
+      "support": [
+        "LF",
+        "RF",
+        "RH"
+      ],
+      "occlusionOrder": [
+        "RF",
+        "RH",
+        "body",
+        "LF",
+        "LH"
+      ],
+      "body": {
+        "center": [
+          252,
+          301
+        ],
+        "shoulder": [
+          332,
+          299
+        ],
+        "hip": [
+          182,
+          305
+        ],
+        "head": [
+          388,
+          272
+        ],
+        "tailTip": [
+          114,
+          188
+        ],
+        "headAngleDegrees": -1.41,
+        "backArchPx": 1
+      },
+      "LF": {
+        "state": "late_stance_transition",
+        "joints": [
+          [
+            335,
+            314
+          ],
+          [
+            333,
+            374
+          ],
+          [
+            327,
+            437
+          ]
+        ]
+      },
+      "RF": {
+        "state": "early_stance_transition",
+        "joints": [
+          [
+            318,
+            318
+          ],
+          [
+            357,
+            366
+          ],
+          [
+            387,
+            437
+          ]
+        ]
+      },
+      "LH": {
+        "state": "swing_transition",
+        "joints": [
+          [
+            182,
+            319
+          ],
+          [
+            176,
+            369
+          ],
+          [
+            156,
+            418
+          ]
+        ]
+      },
+      "RH": {
+        "state": "late_stance_transition",
+        "joints": [
+          [
+            202,
+            322
+          ],
+          [
+            200,
+            379
+          ],
+          [
+            198,
+            436
+          ]
+        ]
+      }
+    },
+    {
+      "index": 10,
+      "phase": "dense_video_phase_10",
+      "sourceSeconds": 4.4624,
+      "phaseFraction": 0.36,
+      "support": [
+        "LF",
+        "RF",
+        "RH"
+      ],
+      "occlusionOrder": [
+        "RF",
+        "RH",
+        "body",
+        "LF",
+        "LH"
+      ],
+      "body": {
+        "center": [
+          252,
+          303
+        ],
+        "shoulder": [
+          333,
+          301
+        ],
+        "hip": [
+          182,
+          307
+        ],
+        "head": [
+          388,
+          274
+        ],
+        "tailTip": [
+          114,
+          187
+        ],
+        "headAngleDegrees": -1.51,
+        "backArchPx": 2
+      },
+      "LF": {
+        "state": "late_stance_transition",
+        "joints": [
+          [
+            336,
+            316
+          ],
+          [
+            331,
+            375
+          ],
+          [
+            325,
+            437
+          ]
+        ]
+      },
+      "RF": {
+        "state": "early_stance_transition",
+        "joints": [
+          [
+            319,
+            320
+          ],
+          [
+            356,
+            368
+          ],
+          [
+            383,
+            436
+          ]
+        ]
+      },
+      "LH": {
+        "state": "swing_transition",
+        "joints": [
+          [
+            182,
+            321
+          ],
+          [
+            190,
+            367
+          ],
+          [
+            174,
+            409
+          ]
+        ]
+      },
+      "RH": {
+        "state": "late_stance_transition",
+        "joints": [
+          [
+            202,
+            324
+          ],
+          [
+            198,
+            380
+          ],
+          [
+            195,
+            436
+          ]
+        ]
+      }
+    },
+    {
+      "index": 11,
+      "phase": "dense_video_phase_11",
+      "sourceSeconds": 4.636,
+      "phaseFraction": 0.4,
+      "support": [
+        "LF",
+        "RF",
+        "RH"
+      ],
+      "occlusionOrder": [
+        "RF",
+        "RH",
+        "body",
+        "LF",
+        "LH"
+      ],
+      "body": {
+        "center": [
+          252,
+          304
+        ],
+        "shoulder": [
+          333,
+          302
+        ],
+        "hip": [
+          182,
+          308
+        ],
+        "head": [
+          388,
+          275
+        ],
+        "tailTip": [
+          114,
+          187
+        ],
+        "headAngleDegrees": -1.4,
+        "backArchPx": 2
+      },
+      "LF": {
+        "state": "late_stance_transition",
+        "joints": [
+          [
+            336,
+            317
+          ],
+          [
+            330,
+            375
+          ],
+          [
+            322,
+            434
+          ]
+        ]
+      },
+      "RF": {
+        "state": "early_stance_transition",
+        "joints": [
+          [
+            319,
+            321
+          ],
+          [
+            354,
+            370
+          ],
+          [
+            380,
+            436
+          ]
+        ]
+      },
+      "LH": {
+        "state": "swing_transition",
+        "joints": [
+          [
+            182,
+            322
+          ],
+          [
+            198,
+            368
+          ],
+          [
+            190,
+            410
+          ]
+        ]
+      },
+      "RH": {
+        "state": "late_stance_transition",
+        "joints": [
+          [
+            202,
+            325
+          ],
+          [
+            197,
+            381
+          ],
+          [
+            192,
+            436
+          ]
+        ]
+      }
+    },
+    {
+      "index": 12,
+      "phase": "dense_video_phase_12",
+      "sourceSeconds": 4.8096,
+      "phaseFraction": 0.44,
+      "support": [
+        "RF",
+        "RH"
+      ],
+      "occlusionOrder": [
+        "RF",
+        "RH",
+        "body",
+        "LF",
+        "LH"
+      ],
+      "body": {
+        "center": [
+          252,
+          305
+        ],
+        "shoulder": [
+          332,
+          303
+        ],
+        "hip": [
+          183,
+          309
+        ],
+        "head": [
+          387,
+          276
+        ],
+        "tailTip": [
+          113,
+          189
+        ],
+        "headAngleDegrees": -1.07,
+        "backArchPx": 3
+      },
+      "LF": {
+        "state": "lift_transition",
+        "joints": [
+          [
+            335,
+            318
+          ],
+          [
+            327,
+            373
+          ],
+          [
+            319,
+            429
+          ]
+        ]
+      },
+      "RF": {
+        "state": "mid_stance_transition",
+        "joints": [
+          [
+            318,
+            322
+          ],
+          [
+            352,
+            372
+          ],
+          [
+            375,
+            436
+          ]
+        ]
+      },
+      "LH": {
+        "state": "contact_transition",
+        "joints": [
+          [
+            183,
+            323
+          ],
+          [
+            202,
+            373
+          ],
+          [
+            209,
+            421
+          ]
+        ]
+      },
+      "RH": {
+        "state": "late_stance_transition",
+        "joints": [
+          [
+            203,
+            326
+          ],
+          [
+            196,
+            382
+          ],
+          [
+            188,
+            437
+          ]
+        ]
+      }
+    },
+    {
+      "index": 13,
+      "phase": "dense_video_phase_13",
+      "sourceSeconds": 4.9832,
+      "phaseFraction": 0.48,
+      "support": [
+        "RF",
+        "LH",
+        "RH"
+      ],
+      "occlusionOrder": [
+        "RF",
+        "RH",
+        "body",
+        "LF",
+        "LH"
+      ],
+      "body": {
+        "center": [
+          251,
+          306
+        ],
+        "shoulder": [
+          331,
+          304
+        ],
+        "hip": [
+          183,
+          310
+        ],
+        "head": [
+          386,
+          277
+        ],
+        "tailTip": [
+          112,
+          191
+        ],
+        "headAngleDegrees": -0.68,
+        "backArchPx": 3
+      },
+      "LF": {
+        "state": "lift_transition",
+        "joints": [
+          [
+            334,
+            319
+          ],
+          [
+            325,
+            370
+          ],
+          [
+            318,
+            423
+          ]
+        ]
+      },
+      "RF": {
+        "state": "mid_stance_transition",
+        "joints": [
+          [
+            317,
+            323
+          ],
+          [
+            350,
+            373
+          ],
+          [
+            371,
+            436
+          ]
+        ]
+      },
+      "LH": {
+        "state": "contact_transition",
+        "joints": [
+          [
+            183,
+            324
+          ],
+          [
+            204,
+            377
+          ],
+          [
+            221,
+            432
+          ]
+        ]
+      },
+      "RH": {
+        "state": "late_stance_transition",
+        "joints": [
+          [
+            203,
+            327
+          ],
+          [
+            195,
+            382
+          ],
+          [
+            187,
+            437
+          ]
+        ]
+      }
+    },
+    {
+      "index": 14,
+      "phase": "dense_video_phase_14",
+      "sourceSeconds": 5.1568,
+      "phaseFraction": 0.52,
+      "support": [
+        "RF",
+        "LH",
+        "RH"
+      ],
+      "occlusionOrder": [
+        "RF",
+        "RH",
+        "body",
+        "LF",
+        "LH"
+      ],
+      "body": {
+        "center": [
+          251,
+          306
+        ],
+        "shoulder": [
+          331,
+          304
+        ],
+        "hip": [
+          183,
+          310
+        ],
+        "head": [
+          385,
+          277
+        ],
+        "tailTip": [
+          111,
+          193
+        ],
+        "headAngleDegrees": -0.33,
+        "backArchPx": 3
+      },
+      "LF": {
+        "state": "lift_transition",
+        "joints": [
+          [
+            334,
+            319
+          ],
+          [
+            328,
+            367
+          ],
+          [
+            324,
+            417
+          ]
+        ]
+      },
+      "RF": {
+        "state": "mid_stance_transition",
+        "joints": [
+          [
+            317,
+            323
+          ],
+          [
+            348,
+            374
+          ],
+          [
+            367,
+            436
+          ]
+        ]
+      },
+      "LH": {
+        "state": "contact_transition",
+        "joints": [
+          [
+            183,
+            324
+          ],
+          [
+            205,
+            380
+          ],
+          [
+            227,
+            438
+          ]
+        ]
+      },
+      "RH": {
+        "state": "late_stance_transition",
+        "joints": [
+          [
+            203,
+            327
+          ],
+          [
+            193,
+            381
+          ],
+          [
+            185,
+            434
+          ]
+        ]
+      }
+    },
+    {
+      "index": 15,
+      "phase": "dense_video_phase_15",
+      "sourceSeconds": 5.3304,
+      "phaseFraction": 0.56,
+      "support": [
+        "RF",
+        "LH"
+      ],
+      "occlusionOrder": [
+        "RF",
+        "RH",
+        "body",
+        "LF",
+        "LH"
+      ],
+      "body": {
+        "center": [
+          250,
+          305
+        ],
+        "shoulder": [
+          330,
+          303
+        ],
+        "hip": [
+          183,
+          309
+        ],
+        "head": [
+          384,
+          276
+        ],
+        "tailTip": [
+          110,
+          195
+        ],
+        "headAngleDegrees": 0.01,
+        "backArchPx": 3
+      },
+      "LF": {
+        "state": "lift_transition",
+        "joints": [
+          [
+            333,
+            318
+          ],
+          [
+            336,
+            362
+          ],
+          [
+            337,
+            410
+          ]
+        ]
+      },
+      "RF": {
+        "state": "mid_stance_transition",
+        "joints": [
+          [
+            316,
+            322
+          ],
+          [
+            345,
+            375
+          ],
+          [
+            362,
+            436
+          ]
+        ]
+      },
+      "LH": {
+        "state": "contact_transition",
+        "joints": [
+          [
+            183,
+            323
+          ],
+          [
+            205,
+            380
+          ],
+          [
+            224,
+            438
+          ]
+        ]
+      },
+      "RH": {
+        "state": "late_stance_transition",
+        "joints": [
+          [
+            203,
+            326
+          ],
+          [
+            191,
+            377
+          ],
+          [
+            181,
+            428
+          ]
+        ]
+      }
+    },
+    {
+      "index": 16,
+      "phase": "dense_video_phase_16",
+      "sourceSeconds": 5.504,
+      "phaseFraction": 0.6,
+      "support": [
+        "RF",
+        "LH"
+      ],
+      "occlusionOrder": [
+        "RF",
+        "RH",
+        "body",
+        "LF",
+        "LH"
+      ],
+      "body": {
+        "center": [
+          249,
+          305
+        ],
+        "shoulder": [
+          329,
+          303
+        ],
+        "hip": [
+          182,
+          309
+        ],
+        "head": [
+          383,
+          276
+        ],
+        "tailTip": [
+          109,
+          198
+        ],
+        "headAngleDegrees": 0.33,
+        "backArchPx": 2
+      },
+      "LF": {
+        "state": "swing_transition",
+        "joints": [
+          [
+            332,
+            318
+          ],
+          [
+            345,
+            357
+          ],
+          [
+            352,
+            405
+          ]
+        ]
+      },
+      "RF": {
+        "state": "late_stance_transition",
+        "joints": [
+          [
+            315,
+            322
+          ],
+          [
+            341,
+            375
+          ],
+          [
+            357,
+            436
+          ]
+        ]
+      },
+      "LH": {
+        "state": "early_stance_transition",
+        "joints": [
+          [
+            182,
+            323
+          ],
+          [
+            203,
+            380
+          ],
+          [
+            219,
+            436
+          ]
+        ]
+      },
+      "RH": {
+        "state": "lift_transition",
+        "joints": [
+          [
+            202,
+            326
+          ],
+          [
+            189,
+            372
+          ],
+          [
+            180,
+            421
+          ]
+        ]
+      }
+    },
+    {
+      "index": 17,
+      "phase": "dense_video_phase_17",
+      "sourceSeconds": 5.6776,
+      "phaseFraction": 0.64,
+      "support": [
+        "RF",
+        "LH"
+      ],
+      "occlusionOrder": [
+        "RF",
+        "RH",
+        "body",
+        "LF",
+        "LH"
+      ],
+      "body": {
+        "center": [
+          249,
+          304
+        ],
+        "shoulder": [
+          328,
+          302
+        ],
+        "hip": [
+          182,
+          308
+        ],
+        "head": [
+          382,
+          275
+        ],
+        "tailTip": [
+          107,
+          200
+        ],
+        "headAngleDegrees": 0.59,
+        "backArchPx": 2
+      },
+      "LF": {
+        "state": "swing_transition",
+        "joints": [
+          [
+            331,
+            317
+          ],
+          [
+            352,
+            356
+          ],
+          [
+            364,
+            407
+          ]
+        ]
+      },
+      "RF": {
+        "state": "late_stance_transition",
+        "joints": [
+          [
+            314,
+            321
+          ],
+          [
+            338,
+            375
+          ],
+          [
+            352,
+            436
+          ]
+        ]
+      },
+      "LH": {
+        "state": "early_stance_transition",
+        "joints": [
+          [
+            182,
+            322
+          ],
+          [
+            202,
+            380
+          ],
+          [
+            215,
+            436
+          ]
+        ]
+      },
+      "RH": {
+        "state": "lift_transition",
+        "joints": [
+          [
+            202,
+            325
+          ],
+          [
+            191,
+            369
+          ],
+          [
+            185,
+            416
+          ]
+        ]
+      }
+    },
+    {
+      "index": 18,
+      "phase": "dense_video_phase_18",
+      "sourceSeconds": 5.8512,
+      "phaseFraction": 0.68,
+      "support": [
+        "RF",
+        "LH"
+      ],
+      "occlusionOrder": [
+        "RF",
+        "RH",
+        "body",
+        "LF",
+        "LH"
+      ],
+      "body": {
+        "center": [
+          248,
+          303
+        ],
+        "shoulder": [
+          327,
+          301
+        ],
+        "hip": [
+          181,
+          307
+        ],
+        "head": [
+          380,
+          274
+        ],
+        "tailTip": [
+          106,
+          202
+        ],
+        "headAngleDegrees": 0.81,
+        "backArchPx": 1
+      },
+      "LF": {
+        "state": "swing_transition",
+        "joints": [
+          [
+            330,
+            316
+          ],
+          [
+            358,
+            360
+          ],
+          [
+            375,
+            417
+          ]
+        ]
+      },
+      "RF": {
+        "state": "late_stance_transition",
+        "joints": [
+          [
+            313,
+            320
+          ],
+          [
+            333,
+            375
+          ],
+          [
+            348,
+            437
+          ]
+        ]
+      },
+      "LH": {
+        "state": "early_stance_transition",
+        "joints": [
+          [
+            181,
+            321
+          ],
+          [
+            200,
+            379
+          ],
+          [
+            211,
+            436
+          ]
+        ]
+      },
+      "RH": {
+        "state": "lift_transition",
+        "joints": [
+          [
+            201,
+            324
+          ],
+          [
+            198,
+            365
+          ],
+          [
+            197,
+            411
+          ]
+        ]
+      }
+    },
+    {
+      "index": 19,
+      "phase": "dense_video_phase_19",
+      "sourceSeconds": 6.0248,
+      "phaseFraction": 0.72,
+      "support": [
+        "RF",
+        "LH"
+      ],
+      "occlusionOrder": [
+        "RF",
+        "RH",
+        "body",
+        "LF",
+        "LH"
+      ],
+      "body": {
+        "center": [
+          248,
+          302
+        ],
+        "shoulder": [
+          326,
+          300
+        ],
+        "hip": [
+          180,
+          306
+        ],
+        "head": [
+          379,
+          273
+        ],
+        "tailTip": [
+          104,
+          204
+        ],
+        "headAngleDegrees": 0.96,
+        "backArchPx": 0
+      },
+      "LF": {
+        "state": "contact_transition",
+        "joints": [
+          [
+            329,
+            315
+          ],
+          [
+            362,
+            364
+          ],
+          [
+            383,
+            430
+          ]
+        ]
+      },
+      "RF": {
+        "state": "toe_off_transition",
+        "joints": [
+          [
+            312,
+            319
+          ],
+          [
+            329,
+            375
+          ],
+          [
+            343,
+            437
+          ]
+        ]
+      },
+      "LH": {
+        "state": "mid_stance_transition",
+        "joints": [
+          [
+            180,
+            320
+          ],
+          [
+            199,
+            378
+          ],
+          [
+            207,
+            436
+          ]
+        ]
+      },
+      "RH": {
+        "state": "swing_transition",
+        "joints": [
+          [
+            200,
+            323
+          ],
+          [
+            206,
+            362
+          ],
+          [
+            212,
+            407
+          ]
+        ]
+      }
+    },
+    {
+      "index": 20,
+      "phase": "dense_video_phase_20",
+      "sourceSeconds": 6.1984,
+      "phaseFraction": 0.76,
+      "support": [
+        "LF",
+        "RF",
+        "LH"
+      ],
+      "occlusionOrder": [
+        "RF",
+        "RH",
+        "body",
+        "LF",
+        "LH"
+      ],
+      "body": {
+        "center": [
+          248,
+          301
+        ],
+        "shoulder": [
+          325,
+          299
+        ],
+        "hip": [
+          179,
+          305
+        ],
+        "head": [
+          379,
+          272
+        ],
+        "tailTip": [
+          103,
+          205
+        ],
+        "headAngleDegrees": 0.99,
+        "backArchPx": 0
+      },
+      "LF": {
+        "state": "contact_transition",
+        "joints": [
+          [
+            328,
+            314
+          ],
+          [
+            363,
+            367
+          ],
+          [
+            386,
+            437
+          ]
+        ]
+      },
+      "RF": {
+        "state": "toe_off_transition",
+        "joints": [
+          [
+            311,
+            318
+          ],
+          [
+            327,
+            374
+          ],
+          [
+            339,
+            435
+          ]
+        ]
+      },
+      "LH": {
+        "state": "mid_stance_transition",
+        "joints": [
+          [
+            179,
+            319
+          ],
+          [
+            196,
+            378
+          ],
+          [
+            203,
+            436
+          ]
+        ]
+      },
+      "RH": {
+        "state": "swing_transition",
+        "joints": [
+          [
+            199,
+            322
+          ],
+          [
+            211,
+            362
+          ],
+          [
+            222,
+            408
+          ]
+        ]
+      }
+    },
+    {
+      "index": 21,
+      "phase": "dense_video_phase_21",
+      "sourceSeconds": 6.372,
+      "phaseFraction": 0.8,
+      "support": [
+        "LF",
+        "RF",
+        "LH"
+      ],
+      "occlusionOrder": [
+        "RF",
+        "RH",
+        "body",
+        "LF",
+        "LH"
+      ],
+      "body": {
+        "center": [
+          248,
+          300
+        ],
+        "shoulder": [
+          325,
+          298
+        ],
+        "hip": [
+          178,
+          304
+        ],
+        "head": [
+          379,
+          271
+        ],
+        "tailTip": [
+          102,
+          204
+        ],
+        "headAngleDegrees": 0.85,
+        "backArchPx": -1
+      },
+      "LF": {
+        "state": "contact_transition",
+        "joints": [
+          [
+            328,
+            313
+          ],
+          [
+            362,
+            368
+          ],
+          [
+            384,
+            438
+          ]
+        ]
+      },
+      "RF": {
+        "state": "toe_off_transition",
+        "joints": [
+          [
+            311,
+            317
+          ],
+          [
+            325,
+            372
+          ],
+          [
+            332,
+            431
+          ]
+        ]
+      },
+      "LH": {
+        "state": "mid_stance_transition",
+        "joints": [
+          [
+            178,
+            318
+          ],
+          [
+            194,
+            378
+          ],
+          [
+            201,
+            436
+          ]
+        ]
+      },
+      "RH": {
+        "state": "swing_transition",
+        "joints": [
+          [
+            198,
+            321
+          ],
+          [
+            215,
+            367
+          ],
+          [
+            229,
+            417
+          ]
+        ]
+      }
+    },
+    {
+      "index": 22,
+      "phase": "dense_video_phase_22",
+      "sourceSeconds": 6.5456,
+      "phaseFraction": 0.84,
+      "support": [
+        "LF",
+        "LH"
+      ],
+      "occlusionOrder": [
+        "RF",
+        "RH",
+        "body",
+        "LF",
+        "LH"
+      ],
+      "body": {
+        "center": [
+          249,
+          299
+        ],
+        "shoulder": [
+          325,
+          297
+        ],
+        "hip": [
+          177,
+          304
+        ],
+        "head": [
+          380,
+          270
+        ],
+        "tailTip": [
+          102,
+          203
+        ],
+        "headAngleDegrees": 0.63,
+        "backArchPx": -1
+      },
+      "LF": {
+        "state": "early_stance_transition",
+        "joints": [
+          [
+            328,
+            312
+          ],
+          [
+            359,
+            369
+          ],
+          [
+            378,
+            437
+          ]
+        ]
+      },
+      "RF": {
+        "state": "lift_transition",
+        "joints": [
+          [
+            311,
+            316
+          ],
+          [
+            325,
+            369
+          ],
+          [
+            326,
+            425
+          ]
+        ]
+      },
+      "LH": {
+        "state": "late_stance_transition",
+        "joints": [
+          [
+            177,
+            318
+          ],
+          [
+            191,
+            377
+          ],
+          [
+            198,
+            436
+          ]
+        ]
+      },
+      "RH": {
+        "state": "contact_transition",
+        "joints": [
+          [
+            197,
+            321
+          ],
+          [
+            218,
+            373
+          ],
+          [
+            234,
+            429
+          ]
+        ]
+      }
+    },
+    {
+      "index": 23,
+      "phase": "dense_video_phase_23",
+      "sourceSeconds": 6.7192,
+      "phaseFraction": 0.88,
+      "support": [
+        "LF",
+        "LH",
+        "RH"
+      ],
+      "occlusionOrder": [
+        "RF",
+        "RH",
+        "body",
+        "LF",
+        "LH"
+      ],
+      "body": {
+        "center": [
+          249,
+          299
+        ],
+        "shoulder": [
+          325,
+          297
+        ],
+        "hip": [
+          177,
+          304
+        ],
+        "head": [
+          380,
+          270
+        ],
+        "tailTip": [
+          102,
+          202
+        ],
+        "headAngleDegrees": 0.49,
+        "backArchPx": -1
+      },
+      "LF": {
+        "state": "early_stance_transition",
+        "joints": [
+          [
+            328,
+            312
+          ],
+          [
+            354,
+            369
+          ],
+          [
+            371,
+            436
+          ]
+        ]
+      },
+      "RF": {
+        "state": "lift_transition",
+        "joints": [
+          [
+            311,
+            316
+          ],
+          [
+            326,
+            367
+          ],
+          [
+            327,
+            419
+          ]
+        ]
+      },
+      "LH": {
+        "state": "late_stance_transition",
+        "joints": [
+          [
+            177,
+            318
+          ],
+          [
+            186,
+            377
+          ],
+          [
+            191,
+            436
+          ]
+        ]
+      },
+      "RH": {
+        "state": "contact_transition",
+        "joints": [
+          [
+            197,
+            321
+          ],
+          [
+            218,
+            377
+          ],
+          [
+            235,
+            437
+          ]
+        ]
+      }
+    },
+    {
+      "index": 24,
+      "phase": "dense_video_phase_24",
+      "sourceSeconds": 6.8928,
+      "phaseFraction": 0.92,
+      "support": [
+        "LF",
+        "LH",
+        "RH"
+      ],
+      "occlusionOrder": [
+        "RF",
+        "RH",
+        "body",
+        "LF",
+        "LH"
+      ],
+      "body": {
+        "center": [
+          249,
+          299
+        ],
+        "shoulder": [
+          325,
+          297
+        ],
+        "hip": [
+          177,
+          304
+        ],
+        "head": [
+          381,
+          271
+        ],
+        "tailTip": [
+          103,
+          202
+        ],
+        "headAngleDegrees": 0.48,
+        "backArchPx": -1
+      },
+      "LF": {
+        "state": "early_stance_transition",
+        "joints": [
+          [
+            328,
+            312
+          ],
+          [
+            349,
+            370
+          ],
+          [
+            363,
+            436
+          ]
+        ]
+      },
+      "RF": {
+        "state": "lift_transition",
+        "joints": [
+          [
+            311,
+            316
+          ],
+          [
+            330,
+            364
+          ],
+          [
+            338,
+            415
+          ]
+        ]
+      },
+      "LH": {
+        "state": "late_stance_transition",
+        "joints": [
+          [
+            177,
+            318
+          ],
+          [
+            179,
+            376
+          ],
+          [
+            177,
+            436
+          ]
+        ]
+      },
+      "RH": {
+        "state": "contact_transition",
+        "joints": [
+          [
+            197,
+            321
+          ],
+          [
+            214,
+            378
+          ],
+          [
+            229,
+            438
+          ]
+        ]
+      }
+    },
+    {
+      "index": 25,
+      "phase": "dense_video_phase_25",
+      "sourceSeconds": 7.0664,
+      "phaseFraction": 0.96,
+      "support": [
+        "LF",
+        "LH",
+        "RH"
+      ],
+      "occlusionOrder": [
+        "RF",
+        "RH",
+        "body",
+        "LF",
+        "LH"
+      ],
+      "body": {
+        "center": [
+          250,
+          300
+        ],
+        "shoulder": [
+          326,
+          298
+        ],
+        "hip": [
+          178,
+          305
+        ],
+        "head": [
+          381,
+          272
+        ],
+        "tailTip": [
+          104,
+          202
+        ],
+        "headAngleDegrees": 0.52,
+        "backArchPx": 0
+      },
+      "LF": {
+        "state": "mid_stance_transition",
+        "joints": [
+          [
+            329,
+            313
+          ],
+          [
+            342,
+            370
+          ],
+          [
+            354,
+            436
+          ]
+        ]
+      },
+      "RF": {
+        "state": "lift_transition",
+        "joints": [
+          [
+            312,
+            317
+          ],
+          [
+            335,
+            361
+          ],
+          [
+            355,
+            410
+          ]
+        ]
+      },
+      "LH": {
+        "state": "late_stance_transition",
+        "joints": [
+          [
+            178,
+            319
+          ],
+          [
+            171,
+            376
+          ],
+          [
+            161,
+            436
+          ]
+        ]
+      },
+      "RH": {
+        "state": "mid_stance_transition",
+        "joints": [
+          [
+            198,
+            322
+          ],
+          [
+            209,
+            378
+          ],
+          [
+            220,
+            437
+          ]
+        ]
+      },
+      "loopTo": 1,
+      "loopNote": "The omitted 100% endpoint is the same pose as frame 01. Frame 25 to frame 01 is one normal 4% sampling interval, not a long wrap jump."
+    }
+  ],
+  "invariants": {
+    "limbCount": 4,
+    "limbIdentityMustPersist": true,
+    "wholeBodyMotionRequired": true,
+    "bodyCenterMustNotBeLocked": true,
+    "bodyScaleLocked": true,
+    "independentFrameGenerationForbidden": true,
+    "staticBodyPuppetRigForbidden": true,
+    "frame25ToFrame1MustBeContinuous": true
+  },
+  "sampling": {
+    "sourceFrameCount": 25,
+    "endpointIncluded": false,
+    "periodicBoundary": true,
+    "sourcePlaybackIntervalSeconds": 0.1736,
+    "naturalIntervalSeconds": 0.0416,
+    "structuralMethod": "Each output phase has an exact real-video timestamp. Periodic Catmull-Rom is used only to densify the manually identified whole-body landmarks while the source images remain the pose authority."
+  }
+}

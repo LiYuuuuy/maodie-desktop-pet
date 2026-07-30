@@ -1,0 +1,2133 @@
+{
+  "method": {
+    "generatedTransitions": "walking, petting and hissing use constrained generated 50% in-between poses",
+    "otherStates": "50% bidirectional DIS dense optical-flow warp",
+    "idleTransitions": "eight generated poses with exact endpoints and reversible playback"
+  },
+  "targetCenterX": 256,
+  "targetBaselineY": 487,
+  "targetFurMedianBgr": [
+    98.0,
+    147.0,
+    192.0
+  ],
+  "states": {
+    "sitting": {
+      "frameCount": 16,
+      "transitionMethod": "50% bidirectional DIS dense optical-flow warp",
+      "maxCenterDriftPx": 2.0,
+      "maxBaselineDriftPx": 1,
+      "maxFurColorDistance": 1.73,
+      "headWidthsPx": [
+        224,
+        225,
+        225,
+        226,
+        227,
+        228,
+        228,
+        227,
+        224,
+        224,
+        225,
+        226,
+        227,
+        227,
+        228,
+        226
+      ],
+      "maxHeadWidthGrowthRatio": 1.018,
+      "frames": [
+        {
+          "bounds": [
+            123,
+            45,
+            389,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            147.0,
+            192.0
+          ],
+          "furColorDistance": 0.0
+        },
+        {
+          "bounds": [
+            123,
+            45,
+            390,
+            488
+          ],
+          "centerX": 256.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 1.0
+        },
+        {
+          "bounds": [
+            123,
+            45,
+            390,
+            488
+          ],
+          "centerX": 256.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            147.0,
+            192.0
+          ],
+          "furColorDistance": 0.0
+        },
+        {
+          "bounds": [
+            122,
+            45,
+            390,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.41
+        },
+        {
+          "bounds": [
+            121,
+            45,
+            389,
+            488
+          ],
+          "centerX": 255.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.41
+        },
+        {
+          "bounds": [
+            121,
+            44,
+            391,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.41
+        },
+        {
+          "bounds": [
+            122,
+            44,
+            392,
+            487
+          ],
+          "centerX": 257.0,
+          "baselineY": 487,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 1.0
+        },
+        {
+          "bounds": [
+            122,
+            45,
+            391,
+            488
+          ],
+          "centerX": 256.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.41
+        },
+        {
+          "bounds": [
+            123,
+            46,
+            389,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            147.0,
+            191.0
+          ],
+          "furColorDistance": 1.0
+        },
+        {
+          "bounds": [
+            123,
+            46,
+            390,
+            488
+          ],
+          "centerX": 256.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.41
+        },
+        {
+          "bounds": [
+            123,
+            46,
+            390,
+            488
+          ],
+          "centerX": 256.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            147.0,
+            192.0
+          ],
+          "furColorDistance": 0.0
+        },
+        {
+          "bounds": [
+            122,
+            46,
+            390,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        },
+        {
+          "bounds": [
+            122,
+            47,
+            390,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 1.0
+        },
+        {
+          "bounds": [
+            122,
+            46,
+            391,
+            488
+          ],
+          "centerX": 256.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        },
+        {
+          "bounds": [
+            121,
+            46,
+            391,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 1.0
+        },
+        {
+          "bounds": [
+            122,
+            45,
+            390,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        }
+      ]
+    },
+    "walking": {
+      "frameCount": 16,
+      "transitionMethod": "constrained generated 50% in-between poses",
+      "maxCenterDriftPx": 1.5,
+      "maxBaselineDriftPx": 0,
+      "maxFurColorDistance": 1.73,
+      "headWidthsPx": [
+        303,
+        301,
+        303,
+        301,
+        299,
+        296,
+        300,
+        297,
+        303,
+        303,
+        303,
+        304,
+        301,
+        297,
+        300,
+        298
+      ],
+      "maxHeadWidthGrowthRatio": 1.003,
+      "frames": [
+        {
+          "bounds": [
+            85,
+            247,
+            428,
+            488
+          ],
+          "centerX": 256.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 1.41
+        },
+        {
+          "bounds": [
+            86,
+            249,
+            425,
+            488
+          ],
+          "centerX": 255.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            147.0,
+            192.0
+          ],
+          "furColorDistance": 0.0
+        },
+        {
+          "bounds": [
+            83,
+            245,
+            428,
+            488
+          ],
+          "centerX": 255.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 1.41
+        },
+        {
+          "bounds": [
+            85,
+            248,
+            426,
+            488
+          ],
+          "centerX": 255.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 1.41
+        },
+        {
+          "bounds": [
+            84,
+            247,
+            428,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            147.0,
+            192.0
+          ],
+          "furColorDistance": 1.0
+        },
+        {
+          "bounds": [
+            87,
+            248,
+            425,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        },
+        {
+          "bounds": [
+            84,
+            245,
+            427,
+            488
+          ],
+          "centerX": 255.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 1.0
+        },
+        {
+          "bounds": [
+            85,
+            246,
+            427,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        },
+        {
+          "bounds": [
+            80,
+            244,
+            433,
+            488
+          ],
+          "centerX": 256.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        },
+        {
+          "bounds": [
+            84,
+            244,
+            428,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 1.0
+        },
+        {
+          "bounds": [
+            84,
+            240,
+            428,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 1.0
+        },
+        {
+          "bounds": [
+            83,
+            243,
+            429,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            147.0,
+            192.0
+          ],
+          "furColorDistance": 1.0
+        },
+        {
+          "bounds": [
+            81,
+            247,
+            430,
+            488
+          ],
+          "centerX": 255.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.41
+        },
+        {
+          "bounds": [
+            85,
+            246,
+            428,
+            488
+          ],
+          "centerX": 256.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            147.0,
+            191.0
+          ],
+          "furColorDistance": 1.41
+        },
+        {
+          "bounds": [
+            83,
+            248,
+            427,
+            488
+          ],
+          "centerX": 255.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 1.41
+        },
+        {
+          "bounds": [
+            86,
+            244,
+            427,
+            488
+          ],
+          "centerX": 256.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 1.0
+        }
+      ]
+    },
+    "sleeping": {
+      "frameCount": 16,
+      "transitionMethod": "50% bidirectional DIS dense optical-flow warp",
+      "maxCenterDriftPx": 1.5,
+      "maxBaselineDriftPx": 0,
+      "maxFurColorDistance": 1.73,
+      "headWidthsPx": [
+        329,
+        329,
+        328,
+        330,
+        331,
+        331,
+        329,
+        329,
+        329,
+        329,
+        329,
+        330,
+        331,
+        331,
+        330,
+        330
+      ],
+      "maxHeadWidthGrowthRatio": 1.006,
+      "frames": [
+        {
+          "bounds": [
+            78,
+            264,
+            433,
+            488
+          ],
+          "centerX": 255.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            147.0,
+            192.0
+          ],
+          "furColorDistance": 1.0
+        },
+        {
+          "bounds": [
+            78,
+            264,
+            434,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            147.0,
+            191.0
+          ],
+          "furColorDistance": 1.41
+        },
+        {
+          "bounds": [
+            78,
+            264,
+            434,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            147.0,
+            192.0
+          ],
+          "furColorDistance": 1.0
+        },
+        {
+          "bounds": [
+            78,
+            264,
+            435,
+            488
+          ],
+          "centerX": 256.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            147.0,
+            191.0
+          ],
+          "furColorDistance": 1.41
+        },
+        {
+          "bounds": [
+            78,
+            264,
+            436,
+            488
+          ],
+          "centerX": 257.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            147.0,
+            191.0
+          ],
+          "furColorDistance": 1.0
+        },
+        {
+          "bounds": [
+            78,
+            265,
+            436,
+            488
+          ],
+          "centerX": 257.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        },
+        {
+          "bounds": [
+            78,
+            266,
+            435,
+            488
+          ],
+          "centerX": 256.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 1.41
+        },
+        {
+          "bounds": [
+            78,
+            265,
+            435,
+            488
+          ],
+          "centerX": 256.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        },
+        {
+          "bounds": [
+            79,
+            264,
+            434,
+            488
+          ],
+          "centerX": 256.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 1.0
+        },
+        {
+          "bounds": [
+            78,
+            264,
+            434,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        },
+        {
+          "bounds": [
+            78,
+            264,
+            435,
+            488
+          ],
+          "centerX": 256.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 1.41
+        },
+        {
+          "bounds": [
+            78,
+            263,
+            434,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        },
+        {
+          "bounds": [
+            78,
+            263,
+            434,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.41
+        },
+        {
+          "bounds": [
+            78,
+            263,
+            435,
+            488
+          ],
+          "centerX": 256.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        },
+        {
+          "bounds": [
+            78,
+            263,
+            435,
+            488
+          ],
+          "centerX": 256.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            147.0,
+            191.0
+          ],
+          "furColorDistance": 1.41
+        },
+        {
+          "bounds": [
+            78,
+            264,
+            434,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            147.0,
+            191.0
+          ],
+          "furColorDistance": 1.41
+        }
+      ]
+    },
+    "happy": {
+      "frameCount": 16,
+      "transitionMethod": "50% bidirectional DIS dense optical-flow warp",
+      "maxCenterDriftPx": 1.0,
+      "maxBaselineDriftPx": 1,
+      "maxFurColorDistance": 1.73,
+      "headWidthsPx": [
+        224,
+        223,
+        223,
+        223,
+        221,
+        222,
+        222,
+        222,
+        222,
+        221,
+        219,
+        223,
+        226,
+        227,
+        227,
+        226
+      ],
+      "maxHeadWidthGrowthRatio": 1.013,
+      "frames": [
+        {
+          "bounds": [
+            123,
+            45,
+            389,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            147.0,
+            191.0
+          ],
+          "furColorDistance": 1.0
+        },
+        {
+          "bounds": [
+            123,
+            45,
+            389,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        },
+        {
+          "bounds": [
+            123,
+            46,
+            388,
+            488
+          ],
+          "centerX": 255.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            147.0,
+            192.0
+          ],
+          "furColorDistance": 1.0
+        },
+        {
+          "bounds": [
+            123,
+            46,
+            388,
+            488
+          ],
+          "centerX": 255.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        },
+        {
+          "bounds": [
+            124,
+            46,
+            387,
+            487
+          ],
+          "centerX": 255.5,
+          "baselineY": 487,
+          "furMedianBgr": [
+            98.0,
+            147.0,
+            192.0
+          ],
+          "furColorDistance": 0.0
+        },
+        {
+          "bounds": [
+            123,
+            46,
+            388,
+            488
+          ],
+          "centerX": 255.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        },
+        {
+          "bounds": [
+            123,
+            47,
+            389,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.41
+        },
+        {
+          "bounds": [
+            123,
+            46,
+            389,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        },
+        {
+          "bounds": [
+            124,
+            46,
+            389,
+            488
+          ],
+          "centerX": 256.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 1.0
+        },
+        {
+          "bounds": [
+            124,
+            46,
+            388,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        },
+        {
+          "bounds": [
+            125,
+            47,
+            387,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 1.0
+        },
+        {
+          "bounds": [
+            124,
+            48,
+            388,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        },
+        {
+          "bounds": [
+            123,
+            48,
+            389,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        },
+        {
+          "bounds": [
+            122,
+            46,
+            390,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        },
+        {
+          "bounds": [
+            121,
+            45,
+            391,
+            487
+          ],
+          "centerX": 256.0,
+          "baselineY": 487,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        },
+        {
+          "bounds": [
+            122,
+            45,
+            390,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        }
+      ]
+    },
+    "petting": {
+      "frameCount": 16,
+      "transitionMethod": "constrained generated 50% in-between poses",
+      "maxCenterDriftPx": 1.5,
+      "maxBaselineDriftPx": 0,
+      "maxFurColorDistance": 1.73,
+      "headWidthsPx": [
+        223,
+        219,
+        243,
+        233,
+        286,
+        242,
+        297,
+        246,
+        281,
+        233,
+        258,
+        226,
+        225,
+        219,
+        228,
+        218
+      ],
+      "maxHeadWidthGrowthRatio": 1.332,
+      "frames": [
+        {
+          "bounds": [
+            123,
+            50,
+            390,
+            488
+          ],
+          "centerX": 256.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.41
+        },
+        {
+          "bounds": [
+            125,
+            57,
+            388,
+            488
+          ],
+          "centerX": 256.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 1.41
+        },
+        {
+          "bounds": [
+            112,
+            37,
+            399,
+            488
+          ],
+          "centerX": 255.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            147.0,
+            192.0
+          ],
+          "furColorDistance": 0.0
+        },
+        {
+          "bounds": [
+            119,
+            48,
+            393,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        },
+        {
+          "bounds": [
+            97,
+            29,
+            415,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 1.41
+        },
+        {
+          "bounds": [
+            113,
+            48,
+            398,
+            488
+          ],
+          "centerX": 255.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        },
+        {
+          "bounds": [
+            90,
+            9,
+            421,
+            488
+          ],
+          "centerX": 255.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            147.0,
+            191.0
+          ],
+          "furColorDistance": 1.0
+        },
+        {
+          "bounds": [
+            113,
+            49,
+            398,
+            488
+          ],
+          "centerX": 255.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            147.0,
+            192.0
+          ],
+          "furColorDistance": 1.0
+        },
+        {
+          "bounds": [
+            99,
+            29,
+            412,
+            488
+          ],
+          "centerX": 255.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            147.0,
+            191.0
+          ],
+          "furColorDistance": 1.0
+        },
+        {
+          "bounds": [
+            118,
+            58,
+            393,
+            488
+          ],
+          "centerX": 255.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            147.0,
+            192.0
+          ],
+          "furColorDistance": 0.0
+        },
+        {
+          "bounds": [
+            106,
+            25,
+            406,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        },
+        {
+          "bounds": [
+            121,
+            53,
+            393,
+            488
+          ],
+          "centerX": 257.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        },
+        {
+          "bounds": [
+            121,
+            42,
+            391,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        },
+        {
+          "bounds": [
+            124,
+            54,
+            389,
+            488
+          ],
+          "centerX": 256.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            147.0,
+            192.0
+          ],
+          "furColorDistance": 1.0
+        },
+        {
+          "bounds": [
+            121,
+            43,
+            392,
+            488
+          ],
+          "centerX": 256.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 1.0
+        },
+        {
+          "bounds": [
+            126,
+            54,
+            387,
+            488
+          ],
+          "centerX": 256.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        }
+      ]
+    },
+    "hissing": {
+      "frameCount": 16,
+      "transitionMethod": "constrained generated 50% in-between poses",
+      "maxCenterDriftPx": 1.0,
+      "maxBaselineDriftPx": 1,
+      "maxFurColorDistance": 2.24,
+      "headWidthsPx": [
+        212,
+        207,
+        226,
+        213,
+        256,
+        223,
+        287,
+        239,
+        282,
+        238,
+        250,
+        223,
+        230,
+        214,
+        208,
+        207
+      ],
+      "maxHeadWidthGrowthRatio": 1.354,
+      "frames": [
+        {
+          "bounds": [
+            130,
+            72,
+            382,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        },
+        {
+          "bounds": [
+            133,
+            81,
+            378,
+            488
+          ],
+          "centerX": 255.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 1.0
+        },
+        {
+          "bounds": [
+            123,
+            68,
+            390,
+            487
+          ],
+          "centerX": 256.5,
+          "baselineY": 487,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 1.0
+        },
+        {
+          "bounds": [
+            130,
+            86,
+            382,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 1.41
+        },
+        {
+          "bounds": [
+            110,
+            58,
+            402,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 1.0
+        },
+        {
+          "bounds": [
+            125,
+            81,
+            386,
+            488
+          ],
+          "centerX": 255.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 1.0
+        },
+        {
+          "bounds": [
+            105,
+            51,
+            406,
+            488
+          ],
+          "centerX": 255.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        },
+        {
+          "bounds": [
+            121,
+            80,
+            392,
+            488
+          ],
+          "centerX": 256.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        },
+        {
+          "bounds": [
+            107,
+            48,
+            405,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 1.0
+        },
+        {
+          "bounds": [
+            121,
+            72,
+            391,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            96.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 2.24
+        },
+        {
+          "bounds": [
+            115,
+            60,
+            397,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        },
+        {
+          "bounds": [
+            127,
+            79,
+            386,
+            488
+          ],
+          "centerX": 256.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            145.0,
+            192.0
+          ],
+          "furColorDistance": 2.24
+        },
+        {
+          "bounds": [
+            121,
+            63,
+            391,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.41
+        },
+        {
+          "bounds": [
+            131,
+            80,
+            382,
+            488
+          ],
+          "centerX": 256.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        },
+        {
+          "bounds": [
+            132,
+            77,
+            379,
+            488
+          ],
+          "centerX": 255.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 1.41
+        },
+        {
+          "bounds": [
+            132,
+            73,
+            380,
+            487
+          ],
+          "centerX": 256.0,
+          "baselineY": 487,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 1.41
+        }
+      ]
+    }
+  },
+  "idleTransitions": {
+    "sitting-walking": {
+      "frameCount": 8,
+      "reversePlayback": true,
+      "maxCenterDriftPx": 1.0,
+      "maxBaselineDriftPx": 1,
+      "maxFurColorDistance": 1.41,
+      "frames": [
+        {
+          "bounds": [
+            123,
+            45,
+            389,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            147.0,
+            192.0
+          ],
+          "furColorDistance": 0.0
+        },
+        {
+          "bounds": [
+            110,
+            60,
+            402,
+            487
+          ],
+          "centerX": 256.0,
+          "baselineY": 487,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.41
+        },
+        {
+          "bounds": [
+            71,
+            117,
+            441,
+            487
+          ],
+          "centerX": 256.0,
+          "baselineY": 487,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 1.0
+        },
+        {
+          "bounds": [
+            74,
+            152,
+            438,
+            487
+          ],
+          "centerX": 256.0,
+          "baselineY": 487,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.41
+        },
+        {
+          "bounds": [
+            78,
+            177,
+            433,
+            487
+          ],
+          "centerX": 255.5,
+          "baselineY": 487,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 1.0
+        },
+        {
+          "bounds": [
+            70,
+            219,
+            441,
+            487
+          ],
+          "centerX": 255.5,
+          "baselineY": 487,
+          "furMedianBgr": [
+            98.0,
+            147.0,
+            192.0
+          ],
+          "furColorDistance": 0.0
+        },
+        {
+          "bounds": [
+            74,
+            243,
+            438,
+            487
+          ],
+          "centerX": 256.0,
+          "baselineY": 487,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.41
+        },
+        {
+          "bounds": [
+            85,
+            247,
+            428,
+            488
+          ],
+          "centerX": 256.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 1.41
+        }
+      ]
+    },
+    "sitting-sleeping": {
+      "frameCount": 8,
+      "reversePlayback": true,
+      "maxCenterDriftPx": 0.5,
+      "maxBaselineDriftPx": 1,
+      "maxFurColorDistance": 1.73,
+      "frames": [
+        {
+          "bounds": [
+            123,
+            45,
+            389,
+            488
+          ],
+          "centerX": 256.0,
+          "baselineY": 488,
+          "furMedianBgr": [
+            98.0,
+            147.0,
+            192.0
+          ],
+          "furColorDistance": 0.0
+        },
+        {
+          "bounds": [
+            111,
+            87,
+            400,
+            487
+          ],
+          "centerX": 255.5,
+          "baselineY": 487,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        },
+        {
+          "bounds": [
+            77,
+            185,
+            435,
+            487
+          ],
+          "centerX": 256.0,
+          "baselineY": 487,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.41
+        },
+        {
+          "bounds": [
+            61,
+            232,
+            450,
+            487
+          ],
+          "centerX": 255.5,
+          "baselineY": 487,
+          "furMedianBgr": [
+            97.0,
+            147.0,
+            191.0
+          ],
+          "furColorDistance": 1.41
+        },
+        {
+          "bounds": [
+            74,
+            226,
+            438,
+            487
+          ],
+          "centerX": 256.0,
+          "baselineY": 487,
+          "furMedianBgr": [
+            97.0,
+            147.0,
+            192.0
+          ],
+          "furColorDistance": 1.0
+        },
+        {
+          "bounds": [
+            64,
+            254,
+            448,
+            487
+          ],
+          "centerX": 256.0,
+          "baselineY": 487,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        },
+        {
+          "bounds": [
+            71,
+            259,
+            440,
+            487
+          ],
+          "centerX": 255.5,
+          "baselineY": 487,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        },
+        {
+          "bounds": [
+            78,
+            264,
+            433,
+            488
+          ],
+          "centerX": 255.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            147.0,
+            192.0
+          ],
+          "furColorDistance": 1.0
+        }
+      ]
+    },
+    "walking-sleeping": {
+      "frameCount": 8,
+      "reversePlayback": true,
+      "maxCenterDriftPx": 1.0,
+      "maxBaselineDriftPx": 1,
+      "maxFurColorDistance": 1.73,
+      "frames": [
+        {
+          "bounds": [
+            85,
+            247,
+            428,
+            488
+          ],
+          "centerX": 256.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 1.41
+        },
+        {
+          "bounds": [
+            78,
+            275,
+            433,
+            487
+          ],
+          "centerX": 255.5,
+          "baselineY": 487,
+          "furMedianBgr": [
+            97.0,
+            147.0,
+            192.0
+          ],
+          "furColorDistance": 1.0
+        },
+        {
+          "bounds": [
+            81,
+            286,
+            431,
+            487
+          ],
+          "centerX": 256.0,
+          "baselineY": 487,
+          "furMedianBgr": [
+            97.0,
+            147.0,
+            192.0
+          ],
+          "furColorDistance": 1.0
+        },
+        {
+          "bounds": [
+            72,
+            289,
+            439,
+            487
+          ],
+          "centerX": 255.5,
+          "baselineY": 487,
+          "furMedianBgr": [
+            98.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.41
+        },
+        {
+          "bounds": [
+            95,
+            239,
+            417,
+            487
+          ],
+          "centerX": 256.0,
+          "baselineY": 487,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            191.0
+          ],
+          "furColorDistance": 1.73
+        },
+        {
+          "bounds": [
+            86,
+            260,
+            426,
+            487
+          ],
+          "centerX": 256.0,
+          "baselineY": 487,
+          "furMedianBgr": [
+            98.0,
+            147.0,
+            192.0
+          ],
+          "furColorDistance": 0.0
+        },
+        {
+          "bounds": [
+            87,
+            257,
+            425,
+            487
+          ],
+          "centerX": 256.0,
+          "baselineY": 487,
+          "furMedianBgr": [
+            97.0,
+            146.0,
+            192.0
+          ],
+          "furColorDistance": 1.41
+        },
+        {
+          "bounds": [
+            78,
+            264,
+            433,
+            488
+          ],
+          "centerX": 255.5,
+          "baselineY": 488,
+          "furMedianBgr": [
+            97.0,
+            147.0,
+            192.0
+          ],
+          "furColorDistance": 1.0
+        }
+      ]
+    }
+  }
+}
