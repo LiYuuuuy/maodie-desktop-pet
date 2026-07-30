@@ -9,8 +9,8 @@
 - 视频页：<https://commons.wikimedia.org/wiki/File:Whole-Body-Mechanics-of-Stealthy-Walking-in-Cats-pone.0003808.s002.ogv>
 - 论文：<https://doi.org/10.1371/journal.pone.0003808>
 - 授权：[Creative Commons Attribution 2.5](https://creativecommons.org/licenses/by/2.5/)
-- 正式 8 帧：`../../work/walking/walking_reference_frames/`
-- 12 帧筛选样本：`../../work/walking/walking_reference_candidates_12/`
+- 正式 25 帧：`../../work/walking/walking_reference_frames/`
+- 50 帧筛选样本：`../../work/walking/walking_reference_candidates_50/`
 - 用户 walking 技术要求：仅作为本地只读输入，不复制到本目录。
 
 详细相位、全身运动和遮挡分析见 `../../work/walking/walk_keyframe_analysis.md`。

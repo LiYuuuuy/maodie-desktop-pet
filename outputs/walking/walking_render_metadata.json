@@ -1,73 +1,193 @@
 {
-  "method": "Eight whole-cat keyframes rendered from one real-cat side-view video stride and its verified whole-body pose specification; no static torso rig and no whole-image optical-flow in-betweening.",
+  "method": "Twenty-five whole-cat phases rendered from 25 exact timestamps in one real-cat side-view stride. The natural cycle duration is unchanged, the duplicated endpoint is omitted, phase 25 is separately rendered from phases 24/01 plus its exact video/debug references, and no static torso rig or whole-frame flow bridge is used.",
   "generator": "OpenAI built-in image generation",
-  "promptSummary": "Maodie identity and patina, exact 4x2 video-driven walk poses, persistent four-limb identities, whole-body weight shift, pure green background.",
-  "sourceSheet": "work/walking/walking_render_v3/walking_video_driven_green.png",
+  "promptSummary": "Maodie identity and patina, exact 5x5 dense video-driven gait phases, persistent four-limb identities, whole-body weight shift, pure green background, and periodic frame-25-to-frame-01 continuity.",
+  "sourceSheet": "work/walking/walking_render_v4/walking_video_driven_25_green.png",
+  "loopBridge": "work/walking/walking_render_v4/walking_loop_bridge_25_green.png",
   "referenceFrames": "work/walking/walking_reference_frames",
   "poseDebug": "work/walking/walking_pose_debug",
-  "frameCount": 8,
-  "fps": 7.687,
+  "frameCount": 25,
+  "fps": 24.0246,
   "cycleSeconds": 1.0406,
-  "scale": 0.88,
+  "scale": 1.46,
   "bounds": [
     [
-      77,
-      234,
-      435,
-      488
-    ],
-    [
-      82,
-      224,
-      431,
+      92,
+      225,
+      420,
       487
     ],
     [
-      89,
+      109,
       226,
-      422,
+      403,
+      487
+    ],
+    [
+      121,
+      220,
+      391,
+      488
+    ],
+    [
+      114,
+      230,
+      397,
+      488
+    ],
+    [
+      117,
+      227,
+      396,
+      487
+    ],
+    [
+      106,
+      211,
+      406,
+      488
+    ],
+    [
+      92,
+      209,
+      420,
+      488
+    ],
+    [
+      108,
+      214,
+      406,
+      488
+    ],
+    [
+      118,
+      203,
+      395,
+      488
+    ],
+    [
+      120,
+      203,
+      393,
+      488
+    ],
+    [
+      99,
+      204,
+      413,
+      487
+    ],
+    [
+      110,
+      208,
+      401,
+      488
+    ],
+    [
+      102,
+      215,
+      412,
+      488
+    ],
+    [
+      117,
+      211,
+      396,
+      488
+    ],
+    [
+      121,
+      206,
+      391,
+      487
+    ],
+    [
+      110,
+      210,
+      404,
+      487
+    ],
+    [
+      91,
+      211,
+      423,
+      488
+    ],
+    [
+      105,
+      209,
+      407,
+      487
+    ],
+    [
+      124,
+      204,
+      389,
+      488
+    ],
+    [
+      119,
+      202,
+      393,
+      487
+    ],
+    [
+      96,
+      214,
+      416,
+      488
+    ],
+    [
+      110,
+      213,
+      402,
+      487
+    ],
+    [
+      118,
+      212,
+      396,
+      487
+    ],
+    [
+      122,
+      210,
+      391,
       488
     ],
     [
       88,
-      231,
-      423,
+      209,
+      425,
       487
-    ],
-    [
-      81,
-      217,
-      431,
-      488
-    ],
-    [
-      83,
-      220,
-      429,
-      488
-    ],
-    [
-      80,
-      227,
-      432,
-      487
-    ],
-    [
-      82,
-      238,
-      430,
-      488
     ]
   ],
   "visibleAreas": [
-    41310,
-    41868,
-    40570,
-    40252,
-    42526,
-    42927,
-    42518,
-    39535
+    37220,
+    35406,
+    34775,
+    33016,
+    33658,
+    38156,
+    40518,
+    37511,
+    35175,
+    36059,
+    39016,
+    38396,
+    38583,
+    37566,
+    35077,
+    38744,
+    40092,
+    38509,
+    35090,
+    35053,
+    41140,
+    38540,
+    37862,
+    36272,
+    39061
   ],
   "bodyCenters": [
     [
@@ -75,7 +195,23 @@
       300
     ],
     [
+      250,
+      299
+    ],
+    [
       251,
+      299
+    ],
+    [
+      251,
+      298
+    ],
+    [
+      251,
+      298
+    ],
+    [
+      252,
       298
     ],
     [
@@ -84,11 +220,39 @@
     ],
     [
       252,
+      300
+    ],
+    [
+      252,
+      301
+    ],
+    [
+      252,
       303
+    ],
+    [
+      252,
+      304
+    ],
+    [
+      252,
+      305
     ],
     [
       251,
       306
+    ],
+    [
+      251,
+      306
+    ],
+    [
+      250,
+      305
+    ],
+    [
+      249,
+      305
     ],
     [
       249,
@@ -96,11 +260,35 @@
     ],
     [
       248,
+      303
+    ],
+    [
+      248,
+      302
+    ],
+    [
+      248,
       301
+    ],
+    [
+      248,
+      300
     ],
     [
       249,
       299
+    ],
+    [
+      249,
+      299
+    ],
+    [
+      249,
+      299
+    ],
+    [
+      250,
+      300
     ]
   ],
   "limbStates": [
@@ -111,46 +299,148 @@
       "RH": "mid_stance"
     },
     {
-      "LF": "late_stance",
-      "RF": "reach",
-      "LH": "late_stance",
-      "RH": "mid_stance"
+      "LF": "mid_stance_transition",
+      "RF": "lift_transition",
+      "LH": "late_stance_transition",
+      "RH": "mid_stance_transition"
     },
     {
-      "LF": "late_stance",
-      "RF": "contact",
-      "LH": "toe_off",
-      "RH": "late_stance"
+      "LF": "late_stance_transition",
+      "RF": "reach_transition",
+      "LH": "late_stance_transition",
+      "RH": "mid_stance_transition"
     },
     {
-      "LF": "late_stance",
-      "RF": "early_stance",
-      "LH": "swing",
-      "RH": "late_stance"
+      "LF": "late_stance_transition",
+      "RF": "reach_transition",
+      "LH": "late_stance_transition",
+      "RH": "mid_stance_transition"
     },
     {
-      "LF": "lift",
-      "RF": "mid_stance",
-      "LH": "contact",
-      "RH": "late_stance"
+      "LF": "late_stance_transition",
+      "RF": "reach_transition",
+      "LH": "late_stance_transition",
+      "RH": "mid_stance_transition"
     },
     {
-      "LF": "swing",
-      "RF": "late_stance",
-      "LH": "early_stance",
-      "RH": "lift"
+      "LF": "late_stance_transition",
+      "RF": "contact_transition",
+      "LH": "toe_off_transition",
+      "RH": "late_stance_transition"
     },
     {
-      "LF": "contact",
-      "RF": "toe_off",
-      "LH": "mid_stance",
-      "RH": "swing"
+      "LF": "late_stance_transition",
+      "RF": "contact_transition",
+      "LH": "toe_off_transition",
+      "RH": "late_stance_transition"
     },
     {
-      "LF": "early_stance",
-      "RF": "lift",
-      "LH": "late_stance",
-      "RH": "contact"
+      "LF": "late_stance_transition",
+      "RF": "contact_transition",
+      "LH": "toe_off_transition",
+      "RH": "late_stance_transition"
+    },
+    {
+      "LF": "late_stance_transition",
+      "RF": "early_stance_transition",
+      "LH": "swing_transition",
+      "RH": "late_stance_transition"
+    },
+    {
+      "LF": "late_stance_transition",
+      "RF": "early_stance_transition",
+      "LH": "swing_transition",
+      "RH": "late_stance_transition"
+    },
+    {
+      "LF": "late_stance_transition",
+      "RF": "early_stance_transition",
+      "LH": "swing_transition",
+      "RH": "late_stance_transition"
+    },
+    {
+      "LF": "lift_transition",
+      "RF": "mid_stance_transition",
+      "LH": "contact_transition",
+      "RH": "late_stance_transition"
+    },
+    {
+      "LF": "lift_transition",
+      "RF": "mid_stance_transition",
+      "LH": "contact_transition",
+      "RH": "late_stance_transition"
+    },
+    {
+      "LF": "lift_transition",
+      "RF": "mid_stance_transition",
+      "LH": "contact_transition",
+      "RH": "late_stance_transition"
+    },
+    {
+      "LF": "lift_transition",
+      "RF": "mid_stance_transition",
+      "LH": "contact_transition",
+      "RH": "late_stance_transition"
+    },
+    {
+      "LF": "swing_transition",
+      "RF": "late_stance_transition",
+      "LH": "early_stance_transition",
+      "RH": "lift_transition"
+    },
+    {
+      "LF": "swing_transition",
+      "RF": "late_stance_transition",
+      "LH": "early_stance_transition",
+      "RH": "lift_transition"
+    },
+    {
+      "LF": "swing_transition",
+      "RF": "late_stance_transition",
+      "LH": "early_stance_transition",
+      "RH": "lift_transition"
+    },
+    {
+      "LF": "contact_transition",
+      "RF": "toe_off_transition",
+      "LH": "mid_stance_transition",
+      "RH": "swing_transition"
+    },
+    {
+      "LF": "contact_transition",
+      "RF": "toe_off_transition",
+      "LH": "mid_stance_transition",
+      "RH": "swing_transition"
+    },
+    {
+      "LF": "contact_transition",
+      "RF": "toe_off_transition",
+      "LH": "mid_stance_transition",
+      "RH": "swing_transition"
+    },
+    {
+      "LF": "early_stance_transition",
+      "RF": "lift_transition",
+      "LH": "late_stance_transition",
+      "RH": "contact_transition"
+    },
+    {
+      "LF": "early_stance_transition",
+      "RF": "lift_transition",
+      "LH": "late_stance_transition",
+      "RH": "contact_transition"
+    },
+    {
+      "LF": "early_stance_transition",
+      "RF": "lift_transition",
+      "LH": "late_stance_transition",
+      "RH": "contact_transition"
+    },
+    {
+      "LF": "mid_stance_transition",
+      "RF": "lift_transition",
+      "LH": "late_stance_transition",
+      "RH": "mid_stance_transition"
     }
   ]
 }

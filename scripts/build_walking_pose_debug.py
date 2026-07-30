@@ -269,28 +269,23 @@ def main() -> None:
         comparisons.append(comparison)
         cv2.imwrite(str(args.output / f"walking_pose_{index:02d}.png"), comparison)
 
-    sheet = np.zeros((PANEL * 2, FRAME_WIDTH * 2, 4), dtype=np.uint8)
-    for index, comparison in enumerate(comparisons):
-        row, column = divmod(index, 2)
-        if row >= 2:
-            break
-        sheet[
-            row * PANEL : (row + 1) * PANEL,
-            column * FRAME_WIDTH : (column + 1) * FRAME_WIDTH,
-        ] = comparison
-    # A compact sheet uses the structures alone so every phase remains legible.
-    structure_sheet = np.zeros((PANEL * 2, PANEL * 4, 4), dtype=np.uint8)
+    # A compact 5x5 sheet keeps all 25 phases visible at once.
+    cell = 256
+    columns = 5
+    rows = math.ceil(len(structures) / columns)
+    structure_sheet = np.zeros((cell * rows, cell * columns, 4), dtype=np.uint8)
     for index, structure in enumerate(structures):
-        row, column = divmod(index, 4)
+        row, column = divmod(index, columns)
         structure_sheet[
-            row * PANEL : (row + 1) * PANEL,
-            column * PANEL : (column + 1) * PANEL,
-        ] = structure
+            row * cell : (row + 1) * cell,
+            column * cell : (column + 1) * cell,
+        ] = cv2.resize(structure, (cell, cell), interpolation=cv2.INTER_AREA)
     cv2.imwrite(str(args.output / "walking_pose_debug_sheet.png"), structure_sheet)
 
     animation = cv2.Animation()
     animation.frames = structures
-    animation.durations = [130] * len(structures)
+    duration_ms = round(1000 / float(spec["playback"]["fps"]))
+    animation.durations = [duration_ms] * len(structures)
     animation.loop_count = 0
     animation.bgcolor = (247, 247, 245, 255)
     if not cv2.imwriteanimation(str(args.output / "walking_pose_debug.webp"), animation):

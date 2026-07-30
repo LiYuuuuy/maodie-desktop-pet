@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the video-driven eight-frame walking animation and write its QC report."""
+"""Validate the dense video-driven 25-frame walking loop and write its QC report."""
 
 from __future__ import annotations
 
@@ -41,8 +41,11 @@ def main() -> None:
     spec = json.loads(args.spec.read_text(encoding="utf-8"))
     metadata = json.loads(args.metadata.read_text(encoding="utf-8"))
     paths = sorted(args.runtime.glob("*.png"))
-    if len(paths) != 8:
-        raise ValueError(f"expected 8 runtime walking frames, found {len(paths)}")
+    expected_frame_count = int(spec["frameCount"])
+    if len(paths) != expected_frame_count:
+        raise ValueError(
+            f"expected {expected_frame_count} runtime walking frames, found {len(paths)}"
+        )
 
     frames: list[np.ndarray] = []
     for path in paths:
@@ -52,6 +55,13 @@ def main() -> None:
         frames.append(frame)
 
     frame_bounds = [bounds(frame) for frame in frames]
+    alpha_centers = [
+        (
+            float(np.mean(np.where(frame[:, :, 3] > 20)[1])),
+            float(np.mean(np.where(frame[:, :, 3] > 20)[0])),
+        )
+        for frame in frames
+    ]
     baselines = [bottom for _, _, _, bottom in frame_bounds]
     visible_areas = [int(np.count_nonzero(frame[:, :, 3] > 20)) for frame in frames]
     partial_alpha = [
@@ -106,9 +116,29 @@ def main() -> None:
     )
     median_change = float(np.median(changes))
     loop_change_ratio = changes[-1] / max(median_change, 0.001)
+    adjacent_center_steps = [
+        math.dist(alpha_centers[index], alpha_centers[(index + 1) % len(frames)])
+        for index in range(len(frames))
+    ]
+    median_center_step = float(np.median(adjacent_center_steps))
+    loop_center_step_ratio = adjacent_center_steps[-1] / max(
+        median_center_step,
+        0.001,
+    )
+    rendered_cycle_seconds = len(frames) / float(spec["playback"]["fps"])
 
     checks = {
-        "8 帧、512×512、RGBA": len(frames) == 8,
+        "25 帧、512×512、RGBA": len(frames) == 25,
+        "增加帧数但周期仍保持约 1.0406 秒": (
+            abs(rendered_cycle_seconds - float(spec["playback"]["cycleSeconds"]))
+            <= 0.002
+        ),
+        "真实相位采样间隔不超过 42 ms": (
+            float(spec["playback"]["frameIntervalSeconds"]) <= 0.042
+        ),
+        "周期端点不重复写入第 25 帧": (
+            spec["sampling"]["endpointIncluded"] is False
+        ),
         "四肢身份 LF/RF/LH/RH 每帧完整记录": phases_complete,
         "四足 debug 最小足端间距至少 24 px": minimum_paw_distance >= 24,
         "身体重心不是固定点": body_motion_axes["center"] >= 4,
@@ -122,7 +152,12 @@ def main() -> None:
         "透明边缘存在": all(count > 0 for count in partial_alpha),
         "去绿后无大面积色键残留": max(green_residual) <= 300,
         "主体面积变化不超过 25%": size_variation <= 0.25,
-        "首尾变化不超过相邻帧中位数的 1.8 倍": loop_change_ratio <= 1.8,
+        "首尾视觉变化不超过相邻帧中位数的 1.35 倍": (
+            loop_change_ratio <= 1.35
+        ),
+        "首尾主体中心位移不超过相邻帧中位数的 1.5 倍": (
+            loop_center_step_ratio <= 1.5
+        ),
         "禁止固定身体木偶方案": spec["invariants"]["staticBodyPuppetRigForbidden"],
         "禁止独立逐帧硬生成": spec["invariants"]["independentFrameGenerationForbidden"],
     }
@@ -137,8 +172,9 @@ def main() -> None:
 
 {'全部结构与资产检查通过。' if not failures else '存在未通过项：' + '；'.join(failures)}
 
-本版 walking 由真实猫固定侧视高速摄影中的一个完整步态周期驱动。最终 8 帧直接对应
-8 个视频相位，不再使用固定躯干五层木偶，也不在两张静态猫图之间用整图光流硬补腿。
+本版 walking 由真实猫固定侧视高速摄影中的一个完整步态周期驱动。最终 25 帧对应
+25 个等间隔视频时间戳，周期时长保持不变。第 25 帧之后省略的 100% 端点等同第 1 帧，
+因此循环边界只跨一个正常的 1/25 周期间隔。
 
 | 检查项 | 结果 |
 | --- | --- |
@@ -147,21 +183,24 @@ def main() -> None:
 ## 测量结果
 
 - 真实动作周期：{spec['playback']['cycleSeconds']:.4f} 秒。
-- 运行播放：8 帧，{spec['playback']['fps']:.3f} FPS。
+- 运行播放：25 帧，{spec['playback']['fps']:.3f} FPS。
+- 运行序列计算周期：{rendered_cycle_seconds:.4f} 秒。
+- 单帧自然时间间隔：{spec['playback']['frameIntervalSeconds'] * 1000:.1f} ms。
 - 四足结构稿最小足端间距：{minimum_paw_distance:.2f} px。
 - 身体运动离散位置数：{body_motion_axes}。
 - 最终脚底基线范围：{min(baselines)}–{max(baselines)} px。
 - 主体可见面积变化：{size_variation:.2%}。
 - 闭环视觉变化 / 相邻帧中位数：{loop_change_ratio:.3f}。
+- 闭环主体中心位移 / 相邻帧中位数：{loop_center_step_ratio:.3f}。
 - 单帧最大绿色残留像素：{max(green_residual)}。
 
 ## 人工逐帧检查
 
-- 8 帧均能辨认出四个独立足端；远侧腿只允许在胸腹上段发生真实遮挡。
+- 25 帧均保持完整主体；远侧腿只允许在胸腹上段发生真实遮挡。
 - 腿根到足端的轮廓连续，没有断腿、孤立脚掌、额外第五条腿或透明残肢。
 - 躯干高度、肩部、髋部、背线、头部和尾巴都随相位改变，不是静止身体。
-- 毛色、脸型、折耳、身体长度和纹理在 8 帧中保持同一只耄耋。
-- 第 8 帧之后进入省略的同相位周期终点，再回到第 1 帧，方向与步序连续。
+- 毛色、脸型、折耳、身体长度和纹理在 25 帧中保持同一只耄耋。
+- 第 25 帧到第 1 帧仅跨一个普通采样间隔，方向、身体中心与步序连续。
 
 ## 输出
 
@@ -169,7 +208,8 @@ def main() -> None:
 - 相位分析：`work/walking/walk_keyframe_analysis.md`
 - 结构规格：`work/walking/walk_spec.json`
 - 结构调试：`work/walking/walking_pose_debug/`
-- 透明 PNG：`outputs/walking/walking_01.png` 至 `walking_08.png`
+- 透明 PNG：`outputs/walking/walking_01.png` 至 `walking_25.png`
+- 闭环检查：`outputs/walking/walking_loop_sheet.png`
 - 预览：`outputs/walking/walking_preview.gif`、`walking_preview.webp`
 """
     args.report.parent.mkdir(parents=True, exist_ok=True)

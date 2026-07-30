@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Extract a complete side-view cat gait cycle from the selected source video."""
+"""Densely sample one complete side-view cat gait cycle from the source video."""
 
 from __future__ import annotations
 
@@ -21,6 +21,8 @@ SOURCE_PAGE = (
 SOURCE_AUTHOR = "Bishop K, Pai A, Schmitt D"
 SOURCE_PAPER = "https://doi.org/10.1371/journal.pone.0003808"
 LICENSE_PAGE = "https://creativecommons.org/licenses/by/2.5/"
+REFERENCE_FRAME_COUNT = 25
+CANDIDATE_FRAME_COUNT = 50
 
 
 def clear_pngs(directory: Path) -> None:
@@ -46,6 +48,75 @@ def activity_crop(frame: np.ndarray) -> np.ndarray:
     return cv2.flip(crop, 1)
 
 
+def foreground_mask(frame: np.ndarray, background: np.ndarray) -> np.ndarray:
+    """Isolate the moving cat from the fixed scientific-camera background."""
+    difference = cv2.absdiff(frame, background)
+    gray = cv2.cvtColor(difference, cv2.COLOR_BGR2GRAY)
+    gray = cv2.GaussianBlur(gray, (5, 5), 0)
+    mask = np.where(gray > 13, 255, 0).astype(np.uint8)
+    mask[:8] = 0
+    mask[-8:] = 0
+    mask = cv2.morphologyEx(
+        mask,
+        cv2.MORPH_CLOSE,
+        cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (11, 11)),
+    )
+    mask = cv2.morphologyEx(
+        mask,
+        cv2.MORPH_OPEN,
+        cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3)),
+    )
+    component_count, labels, stats, _ = cv2.connectedComponentsWithStats(mask)
+    if component_count <= 1:
+        raise ValueError("unable to isolate moving cat")
+    candidates = [
+        index
+        for index in range(1, component_count)
+        if stats[index, cv2.CC_STAT_AREA] >= 140
+        and stats[index, cv2.CC_STAT_WIDTH] >= 18
+        and stats[index, cv2.CC_STAT_HEIGHT] >= 15
+    ]
+    if not candidates:
+        raise ValueError("unable to find cat-sized foreground component")
+    largest = max(candidates, key=lambda index: stats[index, cv2.CC_STAT_AREA])
+    return np.where(labels == largest, 255, 0).astype(np.uint8)
+
+
+def stabilize_root_translation(
+    frame: np.ndarray,
+    background: np.ndarray,
+    phase: float,
+) -> tuple[np.ndarray, int]:
+    """Remove world translation while preserving the cat's within-stride motion."""
+    mask = foreground_mask(frame, background)
+    yy, xx = np.indices(mask.shape)
+    # The cat advances monotonically across this fixed-camera clip. Constrain
+    # foreground selection to that trajectory so cage bars and the white plate
+    # cannot take over the tracker when a leg overlaps the background.
+    expected_x = 78 + phase * 180
+    tracking_region = (
+        (yy >= 42)
+        & (yy <= 178)
+        & (xx >= expected_x - 72)
+        & (xx <= expected_x + 72)
+    )
+    ys, xs = np.where((mask > 0) & tracking_region)
+    if len(xs) < 100:
+        center_x = int(round(expected_x))
+    else:
+        center_x = int(round(float(np.median(xs))))
+    target_x = frame.shape[1] // 2
+    shift_x = target_x - center_x
+    stabilized = cv2.warpAffine(
+        frame,
+        np.float32([[1, 0, shift_x], [0, 1, 0]]),
+        (frame.shape[1], frame.shape[0]),
+        flags=cv2.INTER_CUBIC,
+        borderMode=cv2.BORDER_REFLECT_101,
+    )
+    return stabilized, shift_x
+
+
 def write_frame(path: Path, frame: np.ndarray) -> None:
     resized = cv2.resize(frame, (1280, 720), interpolation=cv2.INTER_CUBIC)
     if not cv2.imwrite(str(path), resized):
@@ -53,8 +124,8 @@ def write_frame(path: Path, frame: np.ndarray) -> None:
 
 
 def write_sheet(path: Path, frames: list[np.ndarray], columns: int) -> None:
-    cell_width = 384
-    cell_height = 216
+    cell_width = 320
+    cell_height = 180
     rows = (len(frames) + columns - 1) // columns
     sheet = np.full(
         (rows * cell_height, columns * cell_width, 3),
@@ -97,7 +168,7 @@ def main() -> None:
     parser.add_argument(
         "--candidates-output",
         type=Path,
-        default=Path("work/walking/walking_reference_candidates_12"),
+        default=Path("work/walking/walking_reference_candidates_50"),
     )
     parser.add_argument(
         "--metadata",
@@ -119,29 +190,42 @@ def main() -> None:
     candidate_times = np.linspace(
         CYCLE_START_SECONDS,
         CYCLE_END_SECONDS,
-        12,
+        CANDIDATE_FRAME_COUNT,
         endpoint=False,
     )
+    raw_candidate_frames = [
+        activity_crop(read_frame(capture, float(timestamp)))
+        for timestamp in candidate_times
+    ]
+    background = np.median(np.stack(raw_candidate_frames), axis=0).astype(np.uint8)
     candidate_frames: list[np.ndarray] = []
-    for index, timestamp in enumerate(candidate_times, start=1):
-        frame = activity_crop(read_frame(capture, float(timestamp)))
+    for index, raw_frame in enumerate(raw_candidate_frames, start=1):
+        phase = (index - 1) / CANDIDATE_FRAME_COUNT
+        frame, _ = stabilize_root_translation(raw_frame, background, phase)
         candidate_frames.append(frame)
         write_frame(args.candidates_output / f"{index:02d}.png", frame)
 
+    # endpoint=False is essential for a seamless loop: the omitted endpoint is
+    # the same gait phase as frame 01. Therefore frame 25 -> frame 01 spans
+    # exactly the same temporal interval as every other adjacent pair.
     reference_times = np.linspace(
         CYCLE_START_SECONDS,
         CYCLE_END_SECONDS,
-        8,
+        REFERENCE_FRAME_COUNT,
         endpoint=False,
     )
     reference_frames: list[np.ndarray] = []
+    reference_shifts: list[int] = []
     for index, timestamp in enumerate(reference_times, start=1):
-        frame = activity_crop(read_frame(capture, float(timestamp)))
+        raw_frame = activity_crop(read_frame(capture, float(timestamp)))
+        phase = (index - 1) / REFERENCE_FRAME_COUNT
+        frame, shift_x = stabilize_root_translation(raw_frame, background, phase)
         reference_frames.append(frame)
+        reference_shifts.append(shift_x)
         write_frame(args.output / f"{index:02d}.png", frame)
 
-    write_sheet(args.candidates_output / "contact_sheet.png", candidate_frames, 4)
-    write_sheet(args.output / "contact_sheet.png", reference_frames, 4)
+    write_sheet(args.candidates_output / "contact_sheet.png", candidate_frames, 10)
+    write_sheet(args.output / "contact_sheet.png", reference_frames, 5)
 
     args.metadata.parent.mkdir(parents=True, exist_ok=True)
     args.metadata.write_text(
@@ -166,11 +250,24 @@ def main() -> None:
                         4,
                     ),
                     "captureFps": CAPTURE_FPS,
-                    "candidateFrameCount": 12,
-                    "referenceFrameCount": 8,
+                    "candidateFrameCount": CANDIDATE_FRAME_COUNT,
+                    "referenceFrameCount": REFERENCE_FRAME_COUNT,
+                    "referenceIntervalPlaybackSeconds": round(
+                        cycle_seconds / REFERENCE_FRAME_COUNT,
+                        4,
+                    ),
+                    "referenceIntervalNaturalSeconds": round(
+                        cycle_seconds
+                        * source_fps
+                        / CAPTURE_FPS
+                        / REFERENCE_FRAME_COUNT,
+                        4,
+                    ),
                     "referenceTimestampsSeconds": [
                         round(float(value), 4) for value in reference_times
                     ],
+                    "rootTranslationRemoved": True,
+                    "horizontalStabilizationPixelsAtSourceResolution": reference_shifts,
                 },
                 "selectionReason": (
                     "Fixed scientific side-view camera, complete short-haired cat, "

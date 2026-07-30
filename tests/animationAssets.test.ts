@@ -12,7 +12,7 @@ import {
 describe("animation asset contract", () => {
   const expectedFrameCounts = {
     sitting: 32,
-    walking: 8,
+    walking: 25,
     sleeping: 32,
     happy: 32,
     petting: 33,
@@ -40,7 +40,7 @@ describe("animation asset contract", () => {
   it("uses one fixed interval within each sequence", () => {
     expect(Object.fromEntries(VISUAL_STATES.map((state) => [state, ANIMATION_CONFIG[state].fps]))).toEqual({
       sitting: 16,
-      walking: 7.687,
+      walking: 24.0246,
       sleeping: 12,
       happy: 24,
       petting: 24,
@@ -148,13 +148,19 @@ describe("animation asset contract", () => {
     ) as {
       frameCount: number;
       bodyMotion: { bodyMustNotBeLocked: boolean };
+      playback: { cycleSeconds: number; frameIntervalSeconds: number };
+      sampling: { endpointIncluded: boolean; periodicBoundary: boolean };
       invariants: {
         limbCount: number;
         wholeBodyMotionRequired: boolean;
         staticBodyPuppetRigForbidden: boolean;
       };
     };
-    expect(walkingSpec.frameCount).toBe(8);
+    expect(walkingSpec.frameCount).toBe(25);
+    expect(walkingSpec.playback.cycleSeconds).toBeCloseTo(1.0406, 4);
+    expect(walkingSpec.playback.frameIntervalSeconds).toBeCloseTo(0.0416, 4);
+    expect(walkingSpec.sampling.endpointIncluded).toBe(false);
+    expect(walkingSpec.sampling.periodicBoundary).toBe(true);
     expect(walkingSpec.invariants.limbCount).toBe(4);
     expect(walkingSpec.invariants.wholeBodyMotionRequired).toBe(true);
     expect(walkingSpec.invariants.staticBodyPuppetRigForbidden).toBe(true);
