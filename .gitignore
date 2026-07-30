@@ -9,3 +9,4 @@ src-tauri/target/
 *:Zone.Identifier
 __pycache__/
 *.py[cod]
+author_requirement/

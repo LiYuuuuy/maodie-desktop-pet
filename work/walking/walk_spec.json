@@ -1,0 +1,140 @@
+{
+  "name": "maodie-walking-v7",
+  "direction": "right",
+  "canvas": {
+    "width": 512,
+    "height": 512,
+    "baselineY": 487,
+    "centerX": 256
+  },
+  "playback": {
+    "keyframeCount": 8,
+    "runtimeFrameCount": 64,
+    "fps": 24,
+    "cycleSeconds": 2.6667,
+    "timingPolicy": "fixed-rate; no held or slow-played frames"
+  },
+  "renderOrder": [
+    "RF",
+    "RH",
+    "body",
+    "LF",
+    "LH"
+  ],
+  "phaseVocabulary": [
+    "contact",
+    "early_stance",
+    "mid_stance",
+    "late_stance",
+    "toe_off",
+    "lift",
+    "swing",
+    "reach"
+  ],
+  "limbs": {
+    "LF": {
+      "identity": "left_front_near",
+      "anchor": [326, 397],
+      "phaseOffset": 0,
+      "colorBgr": [70, 70, 235],
+      "occlusion": "near; always in front of torso"
+    },
+    "RF": {
+      "identity": "right_front_far",
+      "anchor": [307, 399],
+      "phaseOffset": 4,
+      "colorBgr": [235, 110, 55],
+      "occlusion": "far; upper limb always behind torso"
+    },
+    "LH": {
+      "identity": "left_hind_near",
+      "anchor": [190, 395],
+      "phaseOffset": 6,
+      "colorBgr": [65, 190, 70],
+      "occlusion": "near; always in front of torso"
+    },
+    "RH": {
+      "identity": "right_hind_far",
+      "anchor": [169, 397],
+      "phaseOffset": 2,
+      "colorBgr": [40, 215, 235],
+      "occlusion": "far; upper limb always behind torso"
+    }
+  },
+  "frames": [
+    {
+      "index": 1,
+      "LF": "contact",
+      "RF": "toe_off",
+      "LH": "swing",
+      "RH": "mid_stance",
+      "support": ["LF", "RF", "RH"]
+    },
+    {
+      "index": 2,
+      "LF": "early_stance",
+      "RF": "lift",
+      "LH": "reach",
+      "RH": "late_stance",
+      "support": ["LF", "RH"]
+    },
+    {
+      "index": 3,
+      "LF": "mid_stance",
+      "RF": "swing",
+      "LH": "contact",
+      "RH": "toe_off",
+      "support": ["LF", "LH", "RH"]
+    },
+    {
+      "index": 4,
+      "LF": "late_stance",
+      "RF": "reach",
+      "LH": "early_stance",
+      "RH": "lift",
+      "support": ["LF", "LH"]
+    },
+    {
+      "index": 5,
+      "LF": "toe_off",
+      "RF": "contact",
+      "LH": "mid_stance",
+      "RH": "swing",
+      "support": ["LF", "RF", "LH"]
+    },
+    {
+      "index": 6,
+      "LF": "lift",
+      "RF": "early_stance",
+      "LH": "late_stance",
+      "RH": "reach",
+      "support": ["RF", "LH"]
+    },
+    {
+      "index": 7,
+      "LF": "swing",
+      "RF": "mid_stance",
+      "LH": "toe_off",
+      "RH": "contact",
+      "support": ["RF", "LH", "RH"]
+    },
+    {
+      "index": 8,
+      "LF": "reach",
+      "RF": "late_stance",
+      "LH": "lift",
+      "RH": "early_stance",
+      "support": ["RF", "RH"],
+      "loopTo": 1
+    }
+  ],
+  "invariants": {
+    "limbCount": 4,
+    "limbIdentityMustPersist": true,
+    "frame8ToFrame1MustBeContinuous": true,
+    "bodyScaleLocked": true,
+    "bodyCenterDriftMaxPx": 1,
+    "baselineDriftMaxPx": 0,
+    "wholeImageOpticalFlowAllowed": false
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "method": "persistent five-layer walking rig; no whole-image optical flow",
+  "runtimeFrames": 64,
+  "fps": 24,
+  "cycleSeconds": 2.6667,
+  "keyframes": [
+    "walking_01.png",
+    "walking_02.png",
+    "walking_03.png",
+    "walking_04.png",
+    "walking_05.png",
+    "walking_06.png",
+    "walking_07.png",
+    "walking_08.png"
+  ],
+  "limbPhaseOffsets": {
+    "LF": 0,
+    "RF": 4,
+    "LH": 6,
+    "RH": 2
+  },
+  "renderOrder": [
+    "RF",
+    "RH",
+    "LF",
+    "LH",
+    "body"
+  ],
+  "bodyScale": 0.6,
+  "legScale": 0.5,
+  "baselineY": 487
+}

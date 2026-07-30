@@ -77,14 +77,21 @@ src/assets/pet-transitions/<sitting-walking|sitting-sleeping|walking-sleeping>/0
 替换时保持 RGBA PNG、512×512、统一承重点和文件名即可，无需改代码。`walking` 只需朝右，
 向左由程序镜像。三组静息切换动画只保存一个方向，反向切换由播放器倒放。统一身份锚点
 位于 `artifacts/asset-work/v2/`，上一轮动作源表位于 `artifacts/asset-work/v4/`，
-当前重构的走路源表、不可变的已验收转场、预览和质量报告位于
-`artifacts/asset-work/v6/`。素材处理脚本保持原比例、统一承重点与毛色，并在所有相邻
-运行帧之间再插入一张 50% 过渡帧；静息转场永远从只读基准复制，播放器不使用单帧
-停留时长控制速度：
+不可变的已验收转场和上一轮预览位于 `artifacts/asset-work/v6/`。v0.1.8 的 walking
+专项结构、分层部件、透明关键帧、WebP 预览和 QC 位于 `work/walking/` 与
+`outputs/walking/`。walking 使用固定 body、LF、RF、LH、RH 五层骨骼合成，不再使用
+整图光流补帧；其他素材仍由通用处理脚本生成：
 
 ```bash
 PYTHONPATH=/path/to/opencv-python-headless \
   python3 scripts/process_animation_assets.py
+
+PYTHONPATH=/path/to/opencv-python-headless \
+  python3 scripts/build_walking_pose_debug.py
+PYTHONPATH=/path/to/opencv-python-headless \
+  python3 scripts/build_walking_animation.py
+PYTHONPATH=/path/to/opencv-python-headless \
+  python3 scripts/check_walking_animation.py
 ```
 
 参考盘点与生成记录见 [关键帧盘点](docs/keyframe-inventory.md) 和
@@ -107,7 +114,8 @@ PYTHONPATH=/path/to/opencv-python-headless \
 - sitting、sleeping 和 happy 为 32 帧，walking 为 64 帧，petting 为 33 帧，
   hissing 为 31 帧；三组静息状态之间另有 8 帧切换动画。
 - sitting 的前 16 帧是无眨眼平滑循环，每轮有 25% 概率继续进入后 16 帧眨眼段；
-  walking 固定 24 FPS，因此完整步态由 2 秒延长到约 2.67 秒。
+  walking 固定 24 FPS，因此 64 帧完整步态约 2.67 秒；四条腿由永久分层部件驱动，
+  不会在中间帧重新生成或交换身份。
 - sleeping 固定 12 FPS，happy、petting 和 hissing 固定 24 FPS；动作快慢仍完全由
   中间帧密度表达。
 - 应用未附带签名证书、自动更新服务或发布凭据。
