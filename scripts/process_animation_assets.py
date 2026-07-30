@@ -5,10 +5,11 @@ The source sheets are generated at 1536x1024, so each cell is 384x512.
 This script preserves that aspect ratio, removes the chroma-key background,
 aligns every subject to a shared center/baseline, normalizes fur color against
 the sitting anchor, and inserts a variable number of recursively generated 50%
-poses between keyframes. A final 50% refinement pass then adds one true
-in-between pose between every pair of runtime frames. Runtime playback remains
-fixed-rate: motion timing is encoded entirely by frame density, never by
-holding individual frames longer.
+poses between keyframes. A final 50% refinement pass then adds one in-between
+pose between every pair of runtime frames. Approved idle transitions are always
+read from an immutable source directory, never from the runtime output. Runtime
+playback remains fixed-rate: motion timing is encoded entirely by frame density,
+never by holding individual frames longer.
 
 OpenCV is intentionally an asset-authoring dependency only:
 
@@ -402,6 +403,18 @@ def head_width(frame: np.ndarray) -> int:
     return int(xs.max() - xs.min() + 1)
 
 
+def adjacent_visual_changes(frames: list[np.ndarray], looping: bool) -> list[float]:
+    interval_count = len(frames) if looping else len(frames) - 1
+    changes: list[float] = []
+    for index in range(interval_count):
+        current = frames[index]
+        following = frames[(index + 1) % len(frames)]
+        visible = np.maximum(current[:, :, 3], following[:, :, 3]) > 20
+        difference = cv2.absdiff(current[:, :, :3], following[:, :, :3]).mean(axis=2)
+        changes.append(float(np.mean(difference[visible])))
+    return changes
+
+
 def process(
     source_root: Path,
     override_source_root: Path,
@@ -411,14 +424,20 @@ def process(
     v4_midpoint_root: Path,
     v4_quarter_left_root: Path,
     v4_quarter_right_root: Path,
-    v5_walking_midpoint_sheet: Path,
-    idle_transition_source_root: Path,
+    v6_source_root: Path,
+    v6_midpoint_root: Path,
+    v6_quarter_left_root: Path,
+    v6_quarter_right_root: Path,
+    approved_idle_transition_root: Path,
     output_root: Path,
     idle_transition_output_root: Path,
     work_root: Path,
     report_path: Path,
 ) -> None:
     def state_source(state: str) -> Path:
+        v6 = v6_source_root / f"{state}.png"
+        if v6.exists():
+            return v6
         v4 = v4_source_root / f"{state}.png"
         if v4.exists():
             return v4
@@ -433,12 +452,31 @@ def process(
         state: [align_frame(frame) for frame in split_sheet(state_source(state))]
         for state in STATES
     }
+    # The rebuilt gait sheet is generated at a larger crop scale. Apply one
+    # constant scale to the whole cycle using the last accepted walking sheet
+    # as the size reference. Per-frame scaling would create visible breathing.
+    accepted_walking = [
+        align_frame(frame) for frame in split_sheet(v4_source_root / "walking.png")
+    ]
+    walking_area_scale = np.sqrt(
+        np.median([subject_pixel_area(frame) for frame in accepted_walking])
+        / max(1, np.median([subject_pixel_area(frame) for frame in keyframes["walking"]]))
+    )
+    keyframes["walking"] = [
+        scale_uniform(frame, walking_area_scale) for frame in keyframes["walking"]
+    ]
     target_median = fur_median_bgr(keyframes["sitting"][0])
 
     for state in STATES:
-        keyframes[state] = [
-            soften(normalize_color(frame, target_median)) for frame in keyframes[state]
+        processed = [
+            soften(normalize_color(frame, target_median))
+            for frame in keyframes[state]
         ]
+        keyframes[state] = (
+            [align_frame(frame) for frame in processed]
+            if state in {"sitting", "walking", "sleeping"}
+            else processed
+        )
 
     generated_transitions = {
         state: [
@@ -447,38 +485,95 @@ def process(
         ]
         for state in GENERATED_TRANSITION_STATES - V4_STATES
     }
-    v4_midpoints = {
+    def generated_pose_source(root: Path, fallback_root: Path, state: str) -> Path:
+        preferred = root / f"{state}.png"
+        return preferred if preferred.exists() else fallback_root / f"{state}.png"
+
+    generated_midpoints = {
         state: [
             soften(normalize_color(align_frame(frame), target_median))
-            for frame in split_sheet(v4_midpoint_root / f"{state}.png")
+            for frame in split_sheet(
+                generated_pose_source(v6_midpoint_root, v4_midpoint_root, state)
+            )
         ]
         for state in V4_STATES
     }
-    v4_quarter_left = {
+    generated_quarter_left = {
         state: [
             soften(normalize_color(align_frame(frame), target_median))
-            for frame in split_sheet(v4_quarter_left_root / f"{state}.png")
+            for frame in split_sheet(
+                generated_pose_source(
+                    v6_quarter_left_root, v4_quarter_left_root, state
+                )
+            )
         ]
         for state in ("walking", "petting")
     }
-    v4_quarter_right = {
+    generated_quarter_right = {
         state: [
             soften(normalize_color(align_frame(frame), target_median))
-            for frame in split_sheet(v4_quarter_right_root / f"{state}.png")
+            for frame in split_sheet(
+                generated_pose_source(
+                    v6_quarter_right_root, v4_quarter_right_root, state
+                )
+            )
         ]
         for state in ("walking", "petting")
     }
-    v5_walking_midpoints = [
-        soften(normalize_color(align_frame(frame), target_median))
-        for frame in split_grid_sheet(v5_walking_midpoint_sheet, 8, 4)
+    for pose_set in (
+        generated_midpoints,
+        generated_quarter_left,
+        generated_quarter_right,
+    ):
+        pose_set["walking"] = [
+            scale_uniform(frame, walking_area_scale) for frame in pose_set["walking"]
+        ]
+    # Generated quarter cells showed the largest continuity error because they
+    # occasionally repeated a neighboring paw contact. Derive both quarters
+    # from the accepted midpoint and exact keys instead, where each pose gap is
+    # already small.
+    generated_quarter_left["walking"] = [
+        align_frame(
+            transition_frame(
+                keyframes["walking"][index],
+                generated_midpoints["walking"][index],
+            )
+        )
+        for index in range(8)
     ]
+    generated_quarter_right["walking"] = [
+        align_frame(
+            transition_frame(
+                generated_midpoints["walking"][index],
+                keyframes["walking"][(index + 1) % 8],
+            )
+        )
+        for index in range(8)
+    ]
+    # The loop-closing generated cells are the easiest place for an image model
+    # to forget that frame 8 must return to frame 1. Rebuild that single
+    # interval from its two exact endpoints so the last paw cannot teleport at
+    # the wrap boundary.
+    generated_midpoints["walking"][-1] = align_frame(
+        transition_frame(keyframes["walking"][-1], keyframes["walking"][0])
+    )
+    generated_quarter_left["walking"][-1] = align_frame(
+        transition_frame(
+            keyframes["walking"][-1], generated_midpoints["walking"][-1]
+        )
+    )
+    generated_quarter_right["walking"][-1] = align_frame(
+        transition_frame(
+            generated_midpoints["walking"][-1], keyframes["walking"][0]
+        )
+    )
 
     report: dict[str, object] = {
         "method": {
             "timing": "fixed-rate playback; one final 50% refinement between every runtime pair",
-            "generatedTransitions": "walking, petting and hissing use constrained generated 50% poses",
+            "generatedTransitions": "walking rebuilt as one coherent tracked-paw gait; petting and hissing retain constrained generated poses",
             "otherStates": "50% bidirectional DIS dense optical-flow warp",
-            "idleTransitions": "fifteen poses with exact endpoints and reversible playback",
+            "idleTransitions": "eight approved v0.1.5 poses loaded from an immutable source with exact runtime endpoints",
             "sittingPlayback": "calm half-loop with a 25% chance to continue into the blink half",
         },
         "targetCenterX": TARGET_CENTER_X,
@@ -502,7 +597,7 @@ def process(
 
             next_keyframe = keyframes[state][(index + 1) % 8]
             if state in V4_STATES:
-                midpoint = v4_midpoints[state][index]
+                midpoint = generated_midpoints[state][index]
             elif state in GENERATED_TRANSITION_STATES:
                 midpoint = generated_transitions[state][index]
             else:
@@ -518,9 +613,9 @@ def process(
             if insertions != 3:
                 raise ValueError(f"unsupported insertion count {insertions} for {state}")
 
-            if state in v4_quarter_left:
-                quarter_left = v4_quarter_left[state][index]
-                quarter_right = v4_quarter_right[state][index]
+            if state in generated_quarter_left:
+                quarter_left = generated_quarter_left[state][index]
+                quarter_right = generated_quarter_right[state][index]
             else:
                 # A second 50% pass produces 25% and 75% poses while staying
                 # bounded by the generated midpoint and its exact neighbors.
@@ -556,33 +651,26 @@ def process(
             if index >= refinement_intervals:
                 continue
             next_frame = final_frames[(index + 1) % source_frame_count]
-            if state == "walking":
-                midpoint = v5_walking_midpoints[index]
-                target_area = (
-                    subject_pixel_area(frame) + subject_pixel_area(next_frame)
-                ) / 2
-                midpoint_scale = np.sqrt(
-                    target_area / max(1, subject_pixel_area(midpoint))
-                )
-                midpoint = align_frame(
-                    soften(
-                        normalize_color(
-                            scale_uniform(midpoint, midpoint_scale),
-                            target_median,
-                        )
+            midpoint = align_frame(
+                soften(
+                    normalize_color(
+                        align_frame(transition_frame(frame, next_frame)),
+                        target_median,
                     )
                 )
-            else:
-                midpoint = align_frame(
-                    soften(
-                        normalize_color(
-                            align_frame(transition_frame(frame, next_frame)),
-                            target_median,
-                        )
-                    )
-                )
+            )
             refined_frames.append(midpoint)
-        final_frames = refined_frames
+        # Re-anchor after every operation that can expand a soft alpha edge.
+        # This closes the one-pixel baseline/center gap that v0.1.6 left behind.
+        if state == "walking":
+            final_frames = [
+                align_frame(normalize_color(frame, target_median))
+                for frame in refined_frames
+            ]
+        elif state in {"sitting", "sleeping"}:
+            final_frames = [align_frame(frame) for frame in refined_frames]
+        else:
+            final_frames = refined_frames
 
         clear_frames(state_output)
         for index, frame in enumerate(final_frames):
@@ -598,6 +686,10 @@ def process(
         baselines = [int(item["baselineY"]) for item in metrics]
         colors = [float(item["furColorDistance"]) for item in metrics]
         widths = [head_width(frame) for frame in final_frames]
+        visual_changes = adjacent_visual_changes(
+            final_frames, state in LOOPING_STATES
+        )
+        median_visual_change = float(np.median(visual_changes))
         report["states"][state] = {
             "sourceFrameCount": source_frame_count,
             "frameCount": len(final_frames),
@@ -606,7 +698,7 @@ def process(
             "insertionCounts": list(insertion_counts),
             "interactionScale": round(float(interaction_scale), 4),
             "transitionMethod": (
-                "AI-generated 50% walking poses with per-pair area and baseline constraints"
+                "rebuilt tracked-paw gait with generated 25/50/75% poses and adjacent optical refinement"
                 if state == "walking"
                 else "variable recursive constrained 50% in-between poses"
                 if state in V4_STATES
@@ -619,54 +711,33 @@ def process(
             "maxFurColorDistance": round(max(colors), 2),
             "headWidthsPx": widths,
             "maxHeadWidthGrowthRatio": round(max(widths) / max(1, widths[0]), 3),
+            "medianAdjacentVisualChange": round(median_visual_change, 3),
+            "maxAdjacentVisualChange": round(max(visual_changes), 3),
+            "maxToMedianAdjacentVisualChangeRatio": round(
+                max(visual_changes) / max(0.001, median_visual_change), 3
+            ),
             "frames": metrics,
         }
 
     for start, end in IDLE_TRANSITIONS:
         name = f"{start}-{end}"
         transition_output = idle_transition_output_root / name
-        existing_paths = [transition_output / f"{index:02d}.png" for index in range(8)]
-        if all(path.exists() for path in existing_paths):
-            # Preserve the already approved v3 transition interiors. Only the
-            # endpoint that touches a replaced state sequence should change.
-            generated = [
-                cv2.imread(str(path), cv2.IMREAD_UNCHANGED) for path in existing_paths
-            ]
-            if any(frame is None or frame.shape[2] != 4 for frame in generated):
-                raise ValueError(f"invalid existing transition frames for {name}")
-        else:
-            generated = [
-                soften(normalize_color(align_frame(frame), target_median))
-                for frame in split_sheet(idle_transition_source_root / f"{name}.png")
-            ]
-            start_area = subject_pixel_area(keyframes[start][0])
-            end_area = subject_pixel_area(keyframes[end][0])
-            generated = [
-                scale_to_subject_area(
-                    frame,
-                    start_area + (end_area - start_area) * index / (len(generated) - 1),
-                )
-                for index, frame in enumerate(generated)
-            ]
+        if approved_idle_transition_root.resolve() == idle_transition_output_root.resolve():
+            raise ValueError("approved idle transition source must not be the runtime output")
+        approved_paths = [
+            approved_idle_transition_root / name / f"{index:02d}.png"
+            for index in range(8)
+        ]
+        if not all(path.exists() for path in approved_paths):
+            raise ValueError(f"missing immutable approved transition frames for {name}")
+        generated = [
+            cv2.imread(str(path), cv2.IMREAD_UNCHANGED) for path in approved_paths
+        ]
+        if any(frame is None or frame.shape[2] != 4 for frame in generated):
+            raise ValueError(f"invalid approved transition frames for {name}")
         # Exact runtime endpoints prevent a residual flash at either side.
         generated[0] = keyframes[start][0].copy()
         generated[-1] = keyframes[end][0].copy()
-
-        refined_transition: list[np.ndarray] = []
-        for index, frame in enumerate(generated):
-            refined_transition.append(frame)
-            if index + 1 < len(generated):
-                refined_transition.append(
-                    align_frame(
-                        soften(
-                            normalize_color(
-                                align_frame(transition_frame(frame, generated[index + 1])),
-                                target_median,
-                            )
-                        )
-                    )
-                )
-        generated = refined_transition
 
         clear_frames(transition_output)
         for index, frame in enumerate(generated):
@@ -680,6 +751,7 @@ def process(
         report["idleTransitions"][name] = {
             "frameCount": len(generated),
             "reversePlayback": True,
+            "source": f"{approved_idle_transition_root}/{name}",
             "maxCenterDriftPx": round(max(centers) - min(centers), 2),
             "maxBaselineDriftPx": max(baselines) - min(baselines),
             "maxFurColorDistance": round(max(colors), 2),
@@ -713,11 +785,6 @@ def main() -> None:
         default=Path("artifacts/asset-work/v3/generated-transition-sheets"),
     )
     parser.add_argument(
-        "--idle-transition-source-root",
-        type=Path,
-        default=Path("artifacts/asset-work/v3/idle-transition-sheets"),
-    )
-    parser.add_argument(
         "--v4-source-root",
         type=Path,
         default=Path("artifacts/asset-work/v4/source-sheets"),
@@ -738,9 +805,29 @@ def main() -> None:
         default=Path("artifacts/asset-work/v4/generated-quarter-right-sheets"),
     )
     parser.add_argument(
-        "--v5-walking-midpoint-sheet",
+        "--v6-source-root",
         type=Path,
-        default=Path("artifacts/asset-work/v5/ai-generated-midpoint-sheets/walking.png"),
+        default=Path("artifacts/asset-work/v6/source-sheets"),
+    )
+    parser.add_argument(
+        "--v6-midpoint-root",
+        type=Path,
+        default=Path("artifacts/asset-work/v6/generated-midpoint-sheets"),
+    )
+    parser.add_argument(
+        "--v6-quarter-left-root",
+        type=Path,
+        default=Path("artifacts/asset-work/v6/generated-quarter-left-sheets"),
+    )
+    parser.add_argument(
+        "--v6-quarter-right-root",
+        type=Path,
+        default=Path("artifacts/asset-work/v6/generated-quarter-right-sheets"),
+    )
+    parser.add_argument(
+        "--approved-idle-transition-root",
+        type=Path,
+        default=Path("artifacts/asset-work/v6/approved-idle-transition-frames"),
     )
     parser.add_argument(
         "--output-root",
@@ -755,12 +842,12 @@ def main() -> None:
     parser.add_argument(
         "--work-root",
         type=Path,
-        default=Path("artifacts/asset-work/v5"),
+        default=Path("artifacts/asset-work/v6"),
     )
     parser.add_argument(
         "--report",
         type=Path,
-        default=Path("artifacts/asset-work/v5/quality-report.json"),
+        default=Path("artifacts/asset-work/v6/quality-report.json"),
     )
     args = parser.parse_args()
     process(
@@ -772,8 +859,11 @@ def main() -> None:
         args.v4_midpoint_root,
         args.v4_quarter_left_root,
         args.v4_quarter_right_root,
-        args.v5_walking_midpoint_sheet,
-        args.idle_transition_source_root,
+        args.v6_source_root,
+        args.v6_midpoint_root,
+        args.v6_quarter_left_root,
+        args.v6_quarter_right_root,
+        args.approved_idle_transition_root,
         args.output_root,
         args.idle_transition_output_root,
         args.work_root,

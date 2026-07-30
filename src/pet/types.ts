@@ -50,7 +50,7 @@ export const ANIMATION_CONFIG: Record<VisualState, AnimationConfig> = {
   hissing: { fps: 24, loop: false },
 };
 
-export const IDLE_TRANSITION_CONFIG = { fps: 20, loop: false } satisfies AnimationConfig;
+export const IDLE_TRANSITION_CONFIG = { fps: 10, loop: false } satisfies AnimationConfig;
 
 export const IDLE_TRANSITION_PAIRS = [
   ["sitting", "walking"],
